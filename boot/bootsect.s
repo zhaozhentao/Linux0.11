@@ -38,3 +38,4 @@ mem_cfg_val:
   .long 0x000000B1         @ BANKSIZE
   .long 0x00000030         @ MRSRB6
   .long 0x00000030         @ MRSRB7
+
