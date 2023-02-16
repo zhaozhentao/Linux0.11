@@ -11,7 +11,7 @@ _start:
   bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
   mov r1, $on_sdram
   add r2, pc, r1
-  ldr pc, r2
+  mov pc, r2
 
 halt_loop:
   b   halt_loop          @
