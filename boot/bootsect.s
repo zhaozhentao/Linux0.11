@@ -11,9 +11,6 @@ _start:
   bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
   ldr pc, =on_sdram         @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
-halt_loop:
-  b   halt_loop             @ 防止跑飞
-
 on_sdram:
   b on_sdram
 
