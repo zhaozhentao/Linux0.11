@@ -14,6 +14,9 @@ setup: setup.s
 	@$(LD) $(LDFLAGS) -g setup.o -o setup_elf
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup.bin
 
+head.o: head.s
+		@$(AS) -o head.o head.s
+
 clean:
-	rm -f *.o  bootsect_elf *.bin
+	rm -f *.o *.bin setup_elf bootsect_elf 
 
