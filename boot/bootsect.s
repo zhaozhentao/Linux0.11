@@ -6,11 +6,14 @@
 .global _start
 
 _start:
-  bl disable_watch_dog     @ 关闭看门狗
-  bl memsetup              @ 启用外部 SDRAM
-  bl copy_to_sdram         @ 将代码复制到 SDRAM 中
+  bl  disable_watch_dog     @ 关闭看门狗
+  bl  memsetup              @ 启用外部 SDRAM
+  bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
+  ldr r1, =on_sdram
 halt_loop:
     b   halt_loop          @
+
+on_sdram:
 
 disable_watch_dog:
   ldr  r0, WATCHDOG        @ r0 存入 WATCHDOG 寄存器地址, 也可以直接使用 ldr r0, =0x56000010, 让编译器为这个立即数分配存放地址
