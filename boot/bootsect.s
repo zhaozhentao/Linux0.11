@@ -25,16 +25,16 @@ WATCHDOG:
 .align 4
 mem_cfg_val:
   @ 存储控制器13个寄存器的设置值
-  .long 0x22011110 @ BWSCON
-  .long 0x00000700 @ BANKCON0
-  .long 0x00000700 @ BANKCON1
-  .long 0x00000700 @ BANKCON2
-  .long 0x00000700 @ BANKCON3
-  .long 0x00000700 @ BANKCON4
-  .long 0x00000700 @ BANKCON5
-  .long 0x00018005 @ BANKCON6
-  .long 0x00018005 @ BANKCON7
-  .long 0x008C07A3 @ REFRESH
-  .long 0x000000B1 @ BANKSIZE
-  .long 0x00000030 @ MRSRB6
-  .long 0x00000030 @ MRSRB7
+  .long 0x22011110         @ BWSCON
+  .long 0x00000700         @ BANKCON0
+  .long 0x00000700         @ BANKCON1
+  .long 0x00000700         @ BANKCON2
+  .long 0x00000700         @ BANKCON3
+  .long 0x00000700         @ BANKCON4
+  .long 0x00000700         @ BANKCON5
+  .long 0x00018005         @ BANKCON6
+  .long 0x00018005         @ BANKCON7
+  .long 0x008C07A3         @ REFRESH
+  .long 0x000000B1         @ BANKSIZE
+  .long 0x00000030         @ MRSRB6
+  .long 0x00000030         @ MRSRB7
