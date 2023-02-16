@@ -19,5 +19,5 @@ head.o: head.s
 	@$(AS) -o head.o head.s
 
 clean:
-	rm -f *.o *.bin setup_elf bootsect_elf 
+	rm -f *.o *.bin *.dis setup_elf bootsect_elf
 
