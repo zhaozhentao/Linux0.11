@@ -6,7 +6,7 @@ all: bootsect setup
 
 bootsect: bootsect.s
 	@$(AS) -o bootsect.o bootsect.s
-	@$(LD) $(LDFLAGS) -g bootsect.o -o bootsect_elf
+	@$(LD) -Ttext 0x30000000 -g bootsect.o -o bootsect_elf
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S bootsect_elf bootsect.bin
 	@$(OBJDUMP) -D -m arm bootsect_elf > bootsect.dis
 

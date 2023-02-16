@@ -9,17 +9,13 @@ _start:
   bl  disable_watch_dog     @ 关闭看门狗
   bl  memsetup              @ 启用外部 SDRAM
   bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
-
-  mov r1, $on_sdram         @ 将 on_sdram 偏移地址放到 r1
-  ldr r2, =SDRAM_BASE       @ r2 记录 SDRAM 起始地址
-  add r2, r1, r2            @ 现在 r2 就是 on_sdram 在复制到 SDRAM 后的地址了
-  mov pc, r2                @ 运行已经在 SDRAM 的 on_sdram
+  ldr pc, =on_sdram         @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
 halt_loop:
-  b   halt_loop          @
+  b   halt_loop             @ 防止跑飞
 
 on_sdram:
- b  on_sdram
+  b on_sdram
 
 disable_watch_dog:
   ldr  r0, WATCHDOG        @ r0 存入 WATCHDOG 寄存器地址, 也可以直接使用 ldr r0, =0x56000010, 让编译器为这个立即数分配存放地址
