@@ -6,5 +6,5 @@ _start:
   bl disable_watch_dog  # 关闭开门狗
 
 disable_watch_dog:
-  ret
+  mov pc, lr            # 返回 
   
