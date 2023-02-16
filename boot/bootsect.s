@@ -9,9 +9,11 @@ _start:
   bl  disable_watch_dog     @ 关闭看门狗
   bl  memsetup              @ 启用外部 SDRAM
   bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
-  mov r1, $on_sdram
-  add r2, pc, r1
-  mov pc, r2
+
+  mov r1, $on_sdram         @ 将 on_sdram 偏移地址放到 r1
+  ldr r2, =SDRAM_BASE       @ r2 记录 SDRAM 起始地址
+  add r2, r1, r2            @ 现在 r2 就是 on_sdram 在复制到 SDRAM 后的地址了
+  mov pc, r2                @ 运行已经在 SDRAM 的 on_sdram
 
 halt_loop:
   b   halt_loop          @
