@@ -13,3 +13,4 @@ disable_watch_dog:
   
 WATCHDOG:
   .word 0x56000010
+
