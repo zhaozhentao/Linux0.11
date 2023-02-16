@@ -7,6 +7,8 @@
 _start:
   bl disable_watch_dog     @ 关闭看门狗
   bl memsetup              @ 启用外部 SDRAM
+halt_loop:
+    b   halt_loop          @
 
 disable_watch_dog:
   ldr  r0, WATCHDOG        @ r0 存入 WATCHDOG 寄存器地址, 也可以直接使用 ldr r0, =0x56000010, 让编译器为这个立即数分配存放地址
@@ -17,6 +19,11 @@ disable_watch_dog:
 memsetup:
   mov  r1, #MEM_CTL_BASE   @ 存储控制器的13个寄存器的开始地址
   adrl r2, mem_cfg_val
+  add  r3, r1, #52         @ 13 * 4, MEM_CTL_BASE 接着的第 13 个寄存器地址
+
+1:
+  ldr  r4, [r2], #4        @ 读取 r2 指向的地址的值，然后 r2 加 4，指向下一个值
+
   mov  pc, lr
 
 WATCHDOG:
