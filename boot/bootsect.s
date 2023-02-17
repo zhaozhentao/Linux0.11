@@ -62,3 +62,5 @@ mem_cfg_val:
   .long 0x00000030         @ MRSRB6
   .long 0x00000030         @ MRSRB7
 
+MSG:
+  .ascii "IceCityOS is booting ..."
