@@ -96,7 +96,7 @@ print_msg:
   tst  r4, #4
   beq  1b
 
-  mov  r5, #1
+  mov  r5, #49
   strb r5, [r1]
   mov  pc, lr                 @ 返回
 
