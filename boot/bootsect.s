@@ -8,6 +8,7 @@
 _start:
   bl  disable_watch_dog     @ 关闭看门狗
   bl  memsetup              @ 启用外部 SDRAM
+  bl  uart0_init            @ 初始化串口 0
   bl  copy_to_sdram         @ 将代码复制到 SDRAM 中
   ldr pc, =on_sdram         @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
@@ -41,6 +42,30 @@ copy_to_sdram:
  cmp  r1, r3               @ 检查复制到最后地址没
  bne  1b                   @ 未复制到最后跳转到 1:
  mov  pc, lr               @ 返回
+
+uart0_init:
+  ldr  r0, =0x56000070     @ GPHCON 寄存器
+  mov  r1, 0xa0            @ GPH2, GPH3 用作TXD0, RXD0
+  str  r1, [r0]
+  ldr  r0, =0x56000078     @ GPHUP 寄存器
+  mov  r1, 0x0c            @ GPH2, GPH3 内部上拉
+  str  r1, [r0]
+  ldr  r0, =0x50000000     @ ULCON0 寄存器
+  mov  r1, 0x03            @ 8N1 (8 个数据位，无较验，1 个停止位)
+  str  r1, [r0]
+  ldr  r0, =0x50000004     @ UCON0 寄存器
+  mov  r1, 0x05            @ 查询方式，UART时钟源为PCLK
+  str  r1, [r0]
+  ldr  r0, =0x50000008     @ UFCON0 寄存器
+  mov  r1, 0x0             @ 不使用FIFO
+  str  r1, [r0]
+  ldr  r0, =0x5000000c     @ UMCON0 寄存器
+  mov  r1, 0x0             @ 不使用流控
+  str  r1, [r0]
+  ldr  r0, =0x50000028     @ UBRDIV0 寄存器
+  mov  r1, 26              @ 波特率为115200
+  str  r1, [r0]
+  mov  pc, lr              @ 返回
 
 WATCHDOG:
   .word 0x56000010
