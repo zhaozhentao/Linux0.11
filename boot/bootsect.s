@@ -84,12 +84,30 @@ uart0_init:
   str  r1, [r0]
   mov  pc, lr                 @ 返回
 
+memsetup:
+  mov  r1, #MEM_CTL_BASE      @ 存储控制器的13个寄存器的开始地址
+  adrl r2, mem_cfg_val
+  add  r3, r1, #24            @ 13 * 4, MEM_CTL_BASE 接着的第 13 个寄存器地址
+1:
+  ldr  r4, [r2], #4           @ 读取 r2 指向的地址的值，然后 r2 加 4，指向下一个值
+  str  r4, [r1], #4           @ 将 r4 的值设置到 r1 指向的地址，然后 r1 加4，指向下一个寄存器
+  cmp  r1, r3                 @ 比较一下看看 r1 是否已经指向最后一个需要被设置寄存器，
+  bne  1b                     @ 上面的比较不成立的话继续 1: ,bne 1b 指的是 backward，倒退寻找标号为 1 的地方并跳转
+  mov  pc, lr                 @ 返回
+
 print_msg:
   ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
+  ldr  r1, =0x50000020        @ UTXH0 发送数据寄存器
+
+  adrl r2, MSG
+  add  r3, r2, #24            @ 
 1:
-  ldr  r1, r0                 @ 读取 r0 指向的地址,即读取 UTRSTAT0 寄存器
-  tst  r1, #4
+  ldr  r4, r0                 @ 读取 r0 指向的地址,即读取 UTRSTAT0 寄存器
+  tst  r4, #4
   beq  1b
+
+  mov  r5, #1
+  strb r5, [r1]
   mov  pc, lr                 @ 返回
 
 WATCHDOG:
