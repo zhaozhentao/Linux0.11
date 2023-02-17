@@ -10,6 +10,7 @@ _start:
   bl  clock_init              @ 设置MPLL，改变FCLK、HCLK、PCLK
   bl  memsetup                @ 启用外部 SDRAM
   bl  uart0_init              @ 初始化串口 0
+  bl  print_msg
   bl  copy_to_sdram           @ 将代码复制到 SDRAM 中
   ldr pc, =on_sdram           @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
@@ -91,7 +92,7 @@ print_msg:
   adrl r2, MSG
   add  r3, r2, #24            @ 
 1:
-  ldr  r4, r0                 @ 读取 r0 指向的地址,即读取 UTRSTAT0 寄存器
+  ldr  r4, [r0]               @ 读取 r0 指向的地址,即读取 UTRSTAT0 寄存器
   tst  r4, #4
   beq  1b
 
