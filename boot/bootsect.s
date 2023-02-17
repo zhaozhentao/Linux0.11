@@ -55,7 +55,8 @@ clock_init:
   mcr  p15, 0, r1, c1, c0, 0  @ 写入控制寄存器
 
   ldr  r0, =0x4c000004        @ MPLLCON 寄存器
-  mov  r1, #376850            @ 现在，FCLK=200MHz,HCLK=100MHz,PCLK=50MHz
+  ldr  r1, =376850            
+  str  r1, [r0]               @ 现在，FCLK=200MHz,HCLK=100MHz,PCLK=50MHz
 
   mov  pc, lr                 @ 返回
 
