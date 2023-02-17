@@ -45,7 +45,18 @@ copy_to_sdram:
   mov  pc, lr                 @ 返回
 
 clock_init:
-  mrc  p15, 0, r1, c1, c0, 0
+  ldr  r0, =0x4c000014        @ CLKDIVN 寄存器
+  mov  r1, #0x03              @ FCLK:HCLK:PCLK=1:2:4, HDIVN=1,PDIVN=1
+  str  r1, [r0]
+
+                              @ 如果 HDIVN 非0，CPU的总线模式应该从“fast bus mode”变为“asynchronous bus mode”
+  mrc  p15, 0, r1, c1, c0, 0  @ 读出控制寄存器
+  orr  r1, r1, #0xc0000000    @ 设置为“asynchronous bus mode
+  mcr  p15, 0, r1, c1, c0, 0  @ 写入控制寄存器
+
+  ldr  r0, =0x4c000004        @ MPLLCON 寄存器
+  mov  r1, #376850            @ 现在，FCLK=200MHz,HCLK=100MHz,PCLK=50MHz
+
   mov  pc, lr                 @ 返回
 
 uart0_init:
