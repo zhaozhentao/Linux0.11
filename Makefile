@@ -3,7 +3,7 @@ include Makefile.header
 all: Image
 
 Image: boot/bootsect boot/setup 
-	echo Image
+	@tools/build.sh boot/bootsect boot/setup Image
 
 boot/setup: boot/setup.s
 	@make setup -C boot
