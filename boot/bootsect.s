@@ -46,8 +46,7 @@ WATCHDOG:
   .word 0x56000010
 
 .align 4
-mem_cfg_val:
-  @ 存储控制器13个寄存器的设置值
+mem_cfg_val:               @ 存储控制器13个寄存器的设置值
   .long 0x22011110         @ BWSCON
   .long 0x00000700         @ BANKCON0
   .long 0x00000700         @ BANKCON1
