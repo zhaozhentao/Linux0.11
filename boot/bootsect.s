@@ -6,6 +6,10 @@
 .global _start
 
 _start:
+1:
+  mov r0, #1
+  tst r0, #1 
+  beq 1b
   bl  disable_watch_dog       @ 关闭看门狗
   bl  clock_init              @ 设置MPLL，改变FCLK、HCLK、PCLK
   bl  memsetup                @ 启用外部 SDRAM
@@ -82,6 +86,11 @@ uart0_init:
   ldr  r0, =0x50000028        @ UBRDIV0 寄存器
   mov  r1, #26                @ 波特率为115200
   str  r1, [r0]
+  mov  pc, lr                 @ 返回
+
+print_msg:
+  ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
+  tst  r3, #4
   mov  pc, lr                 @ 返回
 
 WATCHDOG:
