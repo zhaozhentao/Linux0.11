@@ -1,4 +1,5 @@
 @ bootsect.s    (C) 2023 zhaozhentao
+@
 @ bootsect 模块在上电后被首先加载到 0 地址处，这个地址是内部 SRAM，大小为 4KB
 @ bootsect 本身大小不超过 512 byte，主要完成了关闭看门狗，初始化时钟，初始化外部 SDRAM
 @ 以及将 bootsect 和 setup 模块加载到 SDRAM 中，起始地址为 0x3000000，最后跳转到 SDRAM 中执行 setup 模块
