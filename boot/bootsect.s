@@ -84,7 +84,7 @@ print_booting_msg:
   ldr  r1, =0x50000020        @ UTXH0 发送数据寄存器
 
   adrl r2, msg1               @ 字符串起始地址
-  add  r3, r2, #25            @ 字符串长度包括换行
+  add  r3, r2, #26            @ 字符串长度包括换行
 1:
   ldr  r4, [r0]               @ 读取 r0 指向的地址,即读取 UTRSTAT0 寄存器
   tst  r4, #4                 @ 检查是否发送完成
@@ -130,4 +130,4 @@ mem_cfg_val:                  @ 存储控制器13个寄存器的设置值
 
 msg1:
   .ascii "IceCityOS is booting ..."
-  .byte 10
+  .byte 13,10

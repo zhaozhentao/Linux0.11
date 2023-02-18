@@ -1,7 +1,5 @@
 include ../Makefile.header
 
-LDFLAGS	+= -Ttext 0
-
 all: bootsect setup
 
 bootsect: bootsect.s
@@ -12,7 +10,7 @@ bootsect: bootsect.s
 
 setup: setup.s
 	$(AS) -o setup.o setup.s
-	$(LD) $(LDFLAGS) -g setup.o -o setup_elf
+	$(LD) -Ttext 0x30000200 -g setup.o -o setup_elf
 	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup
 
 head.o: head.s
