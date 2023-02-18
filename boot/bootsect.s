@@ -96,7 +96,7 @@ print_msg:
   tst  r4, #4
   beq  1b
 
-  ldrb r5, [r2, #1]           @ 读取一个 byte 到 r5，r2 指向下一个 byte
+  ldrb r5, [r2], #1           @ 读取一个 byte 到 r5，r2 指向下一个 byte
   strb r5, [r1]
   cmp  r2, r3                 @ 看看 r2 地址是否已经指向 r3
   bne  1b
