@@ -3,3 +3,7 @@
 .global _start
 _start:
 
+msg2:
+  .ascii "Now we are in setup ..."
+  .byte 10
+
