@@ -10,7 +10,7 @@ _start:
   bl  clock_init              @ 设置MPLL，改变FCLK、HCLK、PCLK
   bl  memsetup                @ 启用外部 SDRAM
   bl  uart0_init              @ 初始化串口 0
-  bl  print_msg
+  bl  print_booting_msg
   bl  copy_to_sdram           @ 将代码复制到 SDRAM 中
   ldr pc, =on_sdram           @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
@@ -74,7 +74,7 @@ uart0_init:
   str  r1, [r0]
   mov  pc, lr                 @ 返回
 
-print_msg:
+print_booting_msg:
   ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
   ldr  r1, =0x50000020        @ UTXH0 发送数据寄存器
 
