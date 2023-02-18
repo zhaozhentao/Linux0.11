@@ -12,6 +12,7 @@ setup: setup.s
 	$(AS) -o setup.o setup.s
 	$(LD) -Ttext 0x30000200 -g setup.o -o setup_elf
 	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup
+	@$(OBJDUMP) -D -m arm setup_elf > setup_elf.dis
 
 head.o: head.s
 	$(AS) -o head.o head.s
