@@ -108,7 +108,7 @@ copy_to_sdram:
   mov  pc, lr                 @ 返回
 
 WATCHDOG:
-  .word 0x56000010
+  .word 0x53000000
 SETUPSEG:
   .word 0x30000200
 
