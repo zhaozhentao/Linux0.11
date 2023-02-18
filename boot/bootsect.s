@@ -59,7 +59,7 @@ uart0_init:
   mov  r1, #0x0c
   str  r1, [r0, #8]           @ GPHUP 寄存器 GPH2, GPH3 内部上拉
 
-  ldr  r0, =ULCON0            @ ULCON0 寄存器
+  ldr  r0, =ULCON0            @ ULCON0 寄存器，后面几个寄存器都通过这个基地址偏移进行寻址
   mov  r1, #0x03
   str  r1, [r0]               @ 8N1 (8 个数据位，无较验，1 个停止位)
 
