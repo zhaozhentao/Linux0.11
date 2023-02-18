@@ -2,6 +2,10 @@
 
 .global _start
 _start:
+  bl print_booting_msg
+
+loop:
+  b loop
 
 print_booting_msg:
   ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
