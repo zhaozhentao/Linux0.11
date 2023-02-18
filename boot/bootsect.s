@@ -20,7 +20,7 @@ _start:
   ldr pc, =on_sdram           @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
 
 on_sdram:
-  b on_sdram
+  ldr pc, =SETUPSEG           @ 跳转到 setup 模块
 
 disable_watch_dog:
   ldr  r0, WATCHDOG           @ r0 存入 WATCHDOG 寄存器地址, 也可以直接使用 ldr r0, =0x56000010, 让编译器为这个立即数分配存放地址
@@ -111,6 +111,8 @@ copy_to_sdram:
 
 WATCHDOG:
   .word 0x56000010
+SETUPSEG:
+  .word 0x30000200
 
 .align 4
 mem_cfg_val:                  @ 存储控制器13个寄存器的设置值
