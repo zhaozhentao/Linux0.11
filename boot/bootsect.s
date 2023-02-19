@@ -73,11 +73,10 @@ uart0_init:
   mov  r1, $0x0
   str  r1, [r0, $8]           @ UFCON0 寄存器设置为 0 不使用FIFO
 
-  mov  r1, $0x0
-  str  r1, [r0, $0xc]         @ UMCON0 寄存器不使用流控
+  str  r1, [r0, $0xc]         @ UMCON0 寄存器设置为 0 不使用流控
 
   mov  r1, $26
-  str  r1, [r0, $0x28]         @ UBRDIV0 寄存器波特率为115200
+  str  r1, [r0, $0x28]        @ UBRDIV0 寄存器波特率为115200
 
   mov  pc, lr                 @ 返回
 
@@ -131,6 +130,7 @@ mem_cfg_val:                  @ 存储控制器13个寄存器的设置值
   .long 0x00000030            @ MRSRB7
 
 msg1:
-  .byte 13,10
+  .byte 13, 10
   .ascii "IceCityOS is booting ..."
-  .byte 13,10,13,10
+  .byte 13, 10, 13, 10
+
