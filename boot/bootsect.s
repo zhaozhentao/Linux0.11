@@ -77,7 +77,7 @@ uart0_init:
   str  r1, [r0, $0xc]         @ UMCON0 寄存器不使用流控
 
   mov  r1, $26
-  str  r1, [r0, 0x28]         @ UBRDIV0 寄存器波特率为115200
+  str  r1, [r0, $0x28]         @ UBRDIV0 寄存器波特率为115200
 
   mov  pc, lr                 @ 返回
 
