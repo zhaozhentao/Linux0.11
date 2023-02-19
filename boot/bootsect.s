@@ -65,9 +65,10 @@ uart0_init:
   ldr  r0, =0x50000000        @ ULCON0 寄存器
   mov  r1, $0x03              @ 8N1 (8 个数据位，无较验，1 个停止位)
   str  r1, [r0]
-  ldr  r0, =0x50000004        @ UCON0 寄存器
-  mov  r1, $0x05              @ 查询方式，UART时钟源为PCLK
-  str  r1, [r0]
+
+  mov  r1, $0x05
+  str  r1, [r0, $4]           @ UCON0 寄存器 查询方式，UART时钟源为PCLK
+
   ldr  r0, =0x50000008        @ UFCON0 寄存器
   mov  r1, $0x0               @ 不使用FIFO
   str  r1, [r0]
