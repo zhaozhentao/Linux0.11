@@ -14,3 +14,4 @@ boot/bootsect: boot/bootsect.s
 clean:
 	@rm -f Image boot/bootsect boot/setup
 	@for i in boot; do make clean -C $$i; done
+
