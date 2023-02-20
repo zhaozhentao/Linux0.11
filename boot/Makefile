@@ -14,11 +14,8 @@ setup: setup.s
 	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup
 	@$(OBJDUMP) -D -m arm setup_elf > setup_elf.dis
 
-head: head.s
-	$(AS) -o head.o head.s
-	$(LD) -Ttext 0x30000400 -g head.o -o head_elf
-	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S head_elf head
-	@$(OBJDUMP) -D -m arm head_elf > head_elf.dis
+head.o: head.s
+	@$(AS) -o head.o head.s
 
 clean:
 	rm -f *.o bootsect setup *.dis setup_elf bootsect_elf

@@ -3,4 +3,5 @@ CC = arm-linux-gcc
 LD = arm-linux-ld
 OBJCOPY = arm-linux-objcopy
 OBJDUMP = arm-linux-objdump
+STRIP = arm-linux-strip
 
