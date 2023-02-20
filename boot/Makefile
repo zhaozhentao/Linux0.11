@@ -1,6 +1,6 @@
 include ../Makefile.header
 
-all: bootsect setup
+all: bootsect setup head
 
 bootsect: bootsect.s
 	$(AS) -o bootsect.o bootsect.s
@@ -14,7 +14,7 @@ setup: setup.s
 	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup
 	@$(OBJDUMP) -D -m arm setup_elf > setup_elf.dis
 
-head.o: head.s
+head: head.s
 	$(AS) -o head.o head.s
 	$(LD) -Ttext 0x30000400 -g head.o -o head_elf
 	$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S head_elf head
