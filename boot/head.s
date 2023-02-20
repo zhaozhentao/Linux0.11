@@ -16,7 +16,7 @@ create_page_table:
  * 为了开启 mmu 后仍然能够继续执行程序,将 0~1M 和 0x30000000 ~ 0x30100000 (sdram 开头的1M) 映射为原来的地址
  * 
  */
-  ldr  r1, =(MMU_SECDESC_WB | 0) @ 虚拟地址 0 >> 20 ，段基地址
+  ldr  r1, =((0 >> 20) | MMU_SECDESC_WB) @ 虚拟地址 0 >> 20 ，段基地址
   str  r1, [r0]                  @ 映射表第一个表项
   mov  pc, lr                    @ 返回
   
