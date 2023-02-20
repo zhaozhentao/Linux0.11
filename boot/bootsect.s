@@ -60,17 +60,17 @@ uart0_init:
   mov  r1, $0xa0              @ GPH2, GPH3 用作TXD0, RXD0
   str  r1, [r0]
 
-  mov  r1, $0x0c
+  mov  r1, $0xc
   str  r1, [r0, $0x78]        @ GPH2, GPH3 内部上拉 GPHUP 寄存器
 
   ldr  r0, =0x50000000        @ ULCON0 寄存器
-  mov  r1, $0x03              @ 8N1 (8 个数据位，无较验，1 个停止位)
+  mov  r1, $3                 @ 8N1 (8 个数据位，无较验，1 个停止位)
   str  r1, [r0]
 
-  mov  r1, $0x05
+  mov  r1, $5
   str  r1, [r0, $4]           @ UCON0 寄存器 查询方式，UART时钟源为PCLK
 
-  mov  r1, $0x0
+  mov  r1, $0
   str  r1, [r0, $8]           @ UFCON0 寄存器设置为 0 不使用FIFO
 
   str  r1, [r0, $0xc]         @ UMCON0 寄存器设置为 0 不使用流控
