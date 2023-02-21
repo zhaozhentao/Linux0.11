@@ -21,7 +21,7 @@ create_page_table:
   str  r1, [r0]                                  @ 映射表第一个表项
 
   ldr  r1, =((GPIO_BASE >> 20) | MMU_SECDESC)    @ 虚拟地址 0 >> 20 ，段基地址
-  str  r1, [r0, (0xA0000000 >> 20)]              @ 映射表第一个表项
+  str  r1, [r0, $(0xA0000000 >> 20)]              @ 映射表第一个表项
 
   mov  pc, lr                                    @ 返回
   
