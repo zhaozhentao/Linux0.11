@@ -12,7 +12,8 @@
 
 _pg_dir:
 start_up:
-  bl create_page_table                                     @ 设置 MMU 映射
+  bl  create_page_table                                    @ 设置 MMU 映射
+  bl  mmu_init                                             @ 开启 MMU
 
 create_page_table:
   ldr  r0, =MMU_TLB_BASE                                   @ 映射表基地址
@@ -30,6 +31,11 @@ create_page_table:
   cmp  r1, r2                                              @ 比较看看是否已经设置完 mmu_table 项
   bne  1b
 
+  mov  pc, lr                                              @ 返回
+
+mmu_init:
+  mov  r0, $0
+  mcr  p15, 0, r0, c7, c7, 0                               @ 使无效 ICaches 和 DCaches
   mov  pc, lr                                              @ 返回
 
 mmu_table:
