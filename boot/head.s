@@ -8,7 +8,7 @@
 .equ GPIO_PHYSICS_BASE,      0x56000000
 .equ GPIO_VIRTUAL_BASE,      0xA0000000
 
-.global _pg_dir
+.global _pg_dir,startup_32
 
 _pg_dir:
 startup_32:
