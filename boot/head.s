@@ -62,3 +62,4 @@ mmu_table:
   .word(SRAM_VIRTUAL_BASE >> 20)                           @ SDRAM 1M 映射表项
   .word((GPIO_PHYSICS_BASE >> 20) | MMU_SECDESC)           @ 0x30000000 ~ 0x30100000 映射设置
   .word(GPIO_VIRTUAL_BASE >> 20)                           @ 0x30000000 ~ 0x30100000 映射表项
+
