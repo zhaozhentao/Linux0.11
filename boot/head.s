@@ -36,6 +36,11 @@ create_page_table:
 mmu_init:
   mov  r0, $0
   mcr  p15, 0, r0, c7, c7, 0                               @ 使无效 ICaches 和 DCaches
+  mcr  p15, 0, r0, c7, c10, 4                              @ drain write buffer on v4
+  mcr  p15, 0, r0, c8, c7, 0                               @ 使无效指令、数据TLB
+  ldr  r4, =MMU_TLB_BASE                                   @ r4 = 页表基址
+  mcr  p15, 0, r4, c2, c0, 0                               @ 设置页表基址寄存器
+
   mov  pc, lr                                              @ 返回
 
 mmu_table:
