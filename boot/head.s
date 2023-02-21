@@ -11,7 +11,7 @@
 .global _pg_dir
 
 _pg_dir:
-start_up:
+startup_32:
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 
