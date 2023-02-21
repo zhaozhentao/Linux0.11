@@ -41,6 +41,20 @@ mmu_init:
   ldr  r4, =MMU_TLB_BASE                                   @ r4 = 页表基址
   mcr  p15, 0, r4, c2, c0, 0                               @ 设置页表基址寄存器
 
+  mvn  r0, $0
+  mcr  p15, 0, r0, c3, c0, 0
+
+  mrc  p15, 0, r0, c1, c0, 0
+  bic  r0, r0, $0x3000
+  bic  r0, r0, $0x0087
+
+  orr  r0, r0, $0x0002
+  orr  r0, r0, $0x0004
+  orr  r0, r0, $0x1000
+  orr  r0, r0, $0x0001
+
+  mcr  p15, 0, r0, c1, c0, 0
+
   mov  pc, lr                                              @ 返回
 
 mmu_table:
