@@ -23,6 +23,7 @@ boot/bootsect: boot/bootsect.s
 	@make bootsect -C boot
 
 clean:
-	@rm -f Image boot/bootsect boot/setup
+	@rm -f Image System.map boot/bootsect boot/setup
+	@rm -f tools/system
 	@for i in boot; do make clean -C $$i; done
 
