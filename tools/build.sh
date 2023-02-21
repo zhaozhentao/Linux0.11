@@ -5,6 +5,11 @@ setup=$2
 system=$3
 IMAGE=$4
 
+# Set the biggest sys_size
+# # Changes from 0x20000 to 0x30000 by tigercn to avoid oversized code.
+SYS_SIZE=$((0x3000*16))
+
+
 # Write bootsect (512 bytes, one sector) to stdout
 [ ! -f "$bootsect" ] && echo "there is no bootsect binary file there" && exit -1
 dd if=$bootsect bs=512 count=1 of=$IMAGE 2>&1 >/dev/null
