@@ -2,10 +2,10 @@
 @
 @ bootsect 模块在上电后被首先加载到 0 地址处，这个地址是内部 SRAM，大小为 4KB
 @ bootsect 本身大小不超过 512 byte，主要完成了关闭看门狗，初始化时钟，初始化外部 SDRAM
-@ 以及将 bootsect 和 setup 模块加载到 SDRAM 中，起始地址为 0x3000000，最后跳转到 SDRAM 中执行 setup 模块
+@ 以及将 bootsect 和 setup 模块加载到 SDRAM 中，起始地址为 0x3090000，最后跳转到 SDRAM 中执行 setup 模块
 
 .equ MEM_CTL_BASE, 0x48000000
-.equ SDRAM_BASE,   0x30000000
+.equ SDRAM_BASE,   0x30090000 @ bootsect 将4K SRAM 移动到这个位置执行
 .equ ULCON0,       0x30000000 @ ULCON0 寄存器
 
 .global _start
@@ -17,7 +17,7 @@ _start:
   bl  uart0_init              @ 初始化串口 0
   bl  print_booting_msg
   bl  copy_to_sdram           @ 将代码复制到 SDRAM 中
-  ldr pc, =on_sdram           @ 跳转到 SDRAM 中运行，因为 _start 链接地址为 0x30000000
+  ldr pc, =on_sdram           @ 跳转到 SDRAM 中运行，因为 setup 模块 _start 链接地址为 0x30090200
 
 on_sdram:
   ldr pc, SETUPSEG           @ 跳转到 setup 模块
@@ -99,7 +99,7 @@ print_booting_msg:
 
 copy_to_sdram:
   mov  r1, $0                 @ 从 0 地址开始 
-  ldr  r2, =SDRAM_BASE        @ SDRAM 所在位置
+  ldr  r2, =SDRAM_BASE        @ bootsect 将4K SRAM 移动到这个位置执行
   mov  r3, $4*1024            @ 4k 大小
 1:
   ldr  r4, [r1], $4           @ 将 r1 指向的地址数据读到 r4, r1 指向下一个地址
