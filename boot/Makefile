@@ -1,6 +1,6 @@
 include ../Makefile.header
 
-all: bootsect setup head
+all: bootsect setup interrupt head 
 
 bootsect: bootsect.s
 	@$(AS) -o bootsect.o bootsect.s
@@ -14,6 +14,12 @@ setup: setup.s
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S setup_elf setup
 	@$(OBJDUMP) -D -m arm setup_elf > setup_elf.dis
 
+interrupt: interrupt.s
+	@$(AS) -o interrupt.o interrupt.s
+	@$(LD) -Ttext 0x0 -g interrupt.o -o interrupt_elf
+	@$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S interrupt_elf interrupt
+	@$(OBJDUMP) -D -m arm interrupt_elf > interrupt_elf.dis
+
 head.o: head.s
 	@$(AS) -o head.o head.s
 
@@ -24,5 +30,5 @@ head_dis: head.s
 	@$(OBJDUMP) -D -m arm head_elf > head_elf.dis
 
 clean:
-	rm -f *.o bootsect setup *.dis setup_elf bootsect_elf
+	rm -f *.o bootsect setup interrupt *.dis *_elf
 
