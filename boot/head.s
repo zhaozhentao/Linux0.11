@@ -65,16 +65,17 @@ mmu_table:
 MMU_TLB_BASE:
   .word 0x30000600
 
-.org 0x1000
-pg0:
-
-.org 0x2000
-pg1:
-
-.org 0x3000
-pg2:
-
-.org 0x4000
-pg3:
-
-.org 0x5000
+@ 这里是 head 模块编译后距离起点 0x1000 地址处
+@.org 0x1000
+@pg0:
+@
+@.org 0x2000
+@pg1:
+@
+@.org 0x3000
+@pg2:
+@
+@.org 0x4000
+@pg3:
+@
+@.org 0x5000
