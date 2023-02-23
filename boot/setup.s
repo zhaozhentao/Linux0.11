@@ -13,13 +13,13 @@ loop:
 mov_irq_table:                @ 先设置好要复制的源和目的地
   ldr  r1, INTERRUPT          @ 从 0x30090400 地址开始复制
   mov  r2, $0x0               @ 将 interrupt 模块移动到这个位置执行
-  mov  r3, $0x200             @ 大小 512 byte
+  add  r3, r1, $0x200         @ 使 r3 指向 INTERRUPT 后 512 byte 地址
   b    do_move                @ 开始复制
 
 mov_system:
   ldr  r1, HEAD               @ 从 0x30090600 地址开始复制
   ldr  r2, SDRAM_BASE         @ 将 system 模块移动到这个位置执行
-  mov  r3, $0x200             @ 大小 512 byte
+  add  r3, r1, $0x200         @ 使 r3 指向 HEAD 后 512 byte 地址
   b    do_move                @ 开始复制
 
 do_move:
