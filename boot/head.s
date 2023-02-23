@@ -11,7 +11,8 @@
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
-  b   _start
+loop:
+  b   loop
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 
