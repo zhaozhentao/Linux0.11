@@ -111,7 +111,7 @@ copy_to_sdram:
 WATCHDOG:
   .word 0x53000000
 SETUPSEG:
-  .word 0x30000200
+  .word 0x30090200
 
 .align 4
 mem_cfg_val:                  @ 存储控制器13个寄存器的设置值
