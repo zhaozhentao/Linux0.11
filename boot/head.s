@@ -34,6 +34,9 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   ldr r3, [r0, $8]
   bic r3, r3, $37
   str r3, [r0, $8]
+
+  msr cpsr_c, #0x5f                                        @ 开启中断
+
   mov  pc, lr                                              @ 返回
 
 create_page_table:
