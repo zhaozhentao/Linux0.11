@@ -28,5 +28,3 @@ _not_used:
 _irq:
 
 _fiq:
-
-

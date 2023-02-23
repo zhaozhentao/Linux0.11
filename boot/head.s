@@ -10,9 +10,16 @@
 .global _start
 
 _start:
+  bl  setup_interrupt                                      @ 设置中断
   b   _start
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
+
+setup_interrupt:
+  ldr r0, GPFCON                                           @ 指向 GPFCON 寄存器
+  mov r1, $((2<<(0*2)) | (2<<(2*2)))
+  str r1, [r0]                                             @ 设置 GPFCON
+  mov  pc, lr                                              @ 返回
 
 create_page_table:
   ldr  r0, MMU_TLB_BASE                                    @ 映射表基地址
@@ -62,6 +69,10 @@ mmu_table:
   .word((GPIO_PHYSICS_BASE >> 20) | MMU_SECDESC)           @ 0x30000000 ~ 0x30100000 映射设置
   .word(GPIO_VIRTUAL_BASE >> 20)                           @ 0x30000000 ~ 0x30100000 映射表项
 
+GPFCON:                                                    @ GPFCON 寄存器
+  .word 0x56000050
+GPGCON:                                                    @ GPGCON 寄存器
+  .word 0x56000060
 MMU_TLB_BASE:
   .word 0x30000600
 
