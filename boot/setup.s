@@ -57,4 +57,3 @@ HEAD:
 msg2:
   .ascii "Now we are in setup ..."
   .byte 13, 10, 13, 10
-

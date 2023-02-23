@@ -25,7 +25,7 @@ head.o: head.s
 
 head_dis: head.s
 	@$(AS) -o head.o head.s
-	@$(LD) -Ttext 0x30000400 -g head.o -o head_elf
+	@$(LD) -Ttext 0x0 -g head.o -o head_elf
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -O binary -S head_elf head
 	@$(OBJDUMP) -D -m arm head_elf > head_elf.dis
 
