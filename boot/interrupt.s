@@ -3,31 +3,27 @@
 
 .global _start
 
-_start:
-  b   reset
-  bl  _undefined_instruction
-  bl  _software_interrupt
-  bl  _prefetch_abort
-  bl  _data_abort
-  bl  _not_used
-  bl  _irq
-  bl  _fiq
-
 reset:
-
+  b    reset
 _undefined_instruction:
-
+  b    _undefined_instruction
 _software_interrupt:
-
+  b    _software_interrupt
 _prefetch_abort:
-
+  b    _prefetch_abort
 _data_abort:
-
+  b    _data_abort
 _not_used:
-
+  b    _not_used
 _irq:
-
+  b    haha
 _fiq:
+  b    _fiq
+
+haha:
+  bl   print_booting_msg
+en:
+  b    en
 
 print_booting_msg:
   ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
