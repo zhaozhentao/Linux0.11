@@ -15,10 +15,24 @@ _start:
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 
-setup_interrupt:
-  ldr r0, GPFCON                                           @ 指向 GPFCON 寄存器
-  mov r1, $((2<<(0*2)) | (2<<(2*2)))
-  str r1, [r0]                                             @ 设置 GPFCON
+setup_interrupt:                                           @ 初始化 GPIO 引脚为外部中断, GPIO 引脚用作外部中断时，默认为低电平触发、IRQ方式(不用设置INTMOD)
+  mov r2, $0x800000
+  mov r1, $0x56000000
+  add r2, r2, $0x80
+  mov r3, $0x22
+  str r3, [r1, $0x50]
+  mov r0, $0x4a000000
+  str r2, [r1, $0x60]
+  ldr r3, [r1, $164]
+  bic r3, r3, $524288
+  bic r3, r3, $2048
+  str r3, [r1, $164]
+  ldr r2, [r0, $12]
+  bic r2, r2, $1
+  str r2, [r0, $12]
+  ldr r3, [r0, $8]
+  bic r3, r3, $37
+  str r3, [r0, $8]
   mov  pc, lr                                              @ 返回
 
 create_page_table:
@@ -73,6 +87,8 @@ GPFCON:                                                    @ GPFCON 寄存器
   .word 0x56000050
 GPGCON:                                                    @ GPGCON 寄存器
   .word 0x56000060
+EINTMASK:                                                  @ EINTMASK 寄存器
+  .word 0x560000a4
 MMU_TLB_BASE:
   .word 0x30000600
 
