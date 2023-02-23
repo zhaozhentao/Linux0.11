@@ -2,7 +2,6 @@
 
 .equ MMU_SECDESC,            3090
 .equ MMU_SECDESC_WB,         3102
-.equ MMU_TLB_BASE,           0x30000600
 .equ SRAM_PHYSICS_BASE,      0x0
 .equ SRAM_VIRTUAL_BASE,      0x0
 .equ GPIO_PHYSICS_BASE,      0x56000000
@@ -16,7 +15,7 @@ _start:
   bl  mmu_init                                             @ 开启 MMU
 
 create_page_table:
-  ldr  r0, =MMU_TLB_BASE                                   @ 映射表基地址
+  ldr  r0, MMU_TLB_BASE                                    @ 映射表基地址
 /*
  * 为了开启 mmu 后仍然能够继续执行程序,将 0~1M 和 0x30000000 ~ 0x30100000 (sdram 开头的1M) 映射为原来的地址
  * 简化代码就是 MMU_TLB_BASE[virtal >> 20] = (physics >> 20) | MMU_SECDESC
@@ -38,7 +37,7 @@ mmu_init:
   mcr  p15, 0, r0, c7, c7, 0                               @ 使无效 ICaches 和 DCaches
   mcr  p15, 0, r0, c7, c10, 4                              @ drain write buffer on v4
   mcr  p15, 0, r0, c8, c7, 0                               @ 使无效指令、数据TLB
-  ldr  r4, =MMU_TLB_BASE                                   @ r4 = 页表基址
+  ldr  r4, MMU_TLB_BASE                                    @ r4 = 页表基址
   mcr  p15, 0, r4, c2, c0, 0                               @ 设置页表基址寄存器
 
   mvn  r0, $0
@@ -62,6 +61,9 @@ mmu_table:
   .word(SRAM_VIRTUAL_BASE >> 20)                           @ SDRAM 1M 映射表项
   .word((GPIO_PHYSICS_BASE >> 20) | MMU_SECDESC)           @ 0x30000000 ~ 0x30100000 映射设置
   .word(GPIO_VIRTUAL_BASE >> 20)                           @ 0x30000000 ~ 0x30100000 映射表项
+
+MMU_TLB_BASE:
+  .word 0x30000600
 
 .org 0x1000
 pg0:
