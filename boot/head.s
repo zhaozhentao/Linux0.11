@@ -11,10 +11,10 @@
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
-loop:
-  b   loop
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
+loop:
+  b   loop
 
 setup_interrupt:                                           @ 初始化 GPIO 引脚为外部中断, GPIO 引脚用作外部中断时，默认为低电平触发、IRQ方式(不用设置INTMOD)
   mov r2, $0x800000
@@ -34,9 +34,6 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   ldr r3, [r0, $8]
   bic r3, r3, $37
   str r3, [r0, $8]
-
-  msr cpsr_c, #0x5f                                        @ 开启中断
-
   mov  pc, lr                                              @ 返回
 
 create_page_table:
