@@ -10,7 +10,7 @@ loop:
   b loop
 
 mov_irq_table:
-  ldr  r1, $0x30090400        @ 从 0x30090400 地址开始
+  ldr  r1, INTERRUPT          @ 从 0x30090400 地址开始
   mov  r2, $0x0               @ 将 interrupt 模块移动到这个位置执行
   mov  r3, $0x200             @ 大小 512 byte
 1:
@@ -38,6 +38,8 @@ print_booting_msg:
   bne  1b
   mov  pc, lr                 @ 返回
 
+INTERRUPT:
+  .word 0x30090400            @ interrupt 模块被 bootsect 移动后的地址
 HEAD:
   .word 0x30090600            @ head 模块地址
 
