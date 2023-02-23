@@ -3,10 +3,23 @@
 .global _start
 _start:
   bl  print_booting_msg
+  bl  mov_irq_table           @ 将中断模块复制到 0 地址，覆盖原来的 bootsect 模块
   ldr pc, HEAD                @ 跳转到 head 模块
 
 loop:
   b loop
+
+mov_irq_table:
+  ldr  r1, $0x30090400        @ 从 0x30090400 地址开始
+  mov  r2, $0x0               @ 将 interrupt 模块移动到这个位置执行
+  mov  r3, $0x200             @ 大小 512 byte
+1:
+  ldr  r4, [r1], $4           @ 将 r1 指向的地址数据读到 r4, r1 指向下一个地址
+  str  r4, [r2], $4           @ 将 r4 里面的数据复制到 r2 指向的地址，然后 r2 指向下一个地址
+  cmp  r1, r3                 @ 检查复制到最后地址没
+  bne  1b                     @ 未复制到最后跳转到 1:
+  mov  pc, lr                 @ 返回
+
 
 print_booting_msg:
   ldr  r0, =0x50000010        @ UTRSTAT0 寄存器
@@ -26,7 +39,7 @@ print_booting_msg:
   mov  pc, lr                 @ 返回
 
 HEAD:
-  .word 0x30090600
+  .word 0x30090600            @ head 模块地址
 
 msg2:
   .ascii "Now we are in setup ..."
