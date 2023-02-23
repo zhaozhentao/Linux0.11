@@ -133,4 +133,3 @@ msg1:
   .byte 13, 10
   .ascii "IceCityOS is booting ..."
   .byte 13, 10, 13, 10
-
