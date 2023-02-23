@@ -8,10 +8,12 @@
 .equ GPIO_PHYSICS_BASE,      0x56000000
 .equ GPIO_VIRTUAL_BASE,      0xA0000000
 
-.global _pg_dir,startup_32
+.global _start
 
-_pg_dir:
-startup_32:
+_start:
+  b   _start
+
+reset:
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 

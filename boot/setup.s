@@ -2,7 +2,8 @@
 
 .global _start
 _start:
-  bl print_booting_msg
+  bl  print_booting_msg
+  ldr pc, HEAD                @ 跳转到 head 模块
 
 loop:
   b loop
@@ -23,6 +24,9 @@ print_booting_msg:
   cmp  r2, r3                 @ 看看 r2 地址是否已经指向 r3
   bne  1b
   mov  pc, lr                 @ 返回
+
+HEAD:
+  .word 0x30090600
 
 msg2:
   .ascii "Now we are in setup ..."
