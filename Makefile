@@ -16,7 +16,8 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 	@tools/build.sh boot/bootsect boot/setup boot/interrupt tools/kernel Image
 	@$(OBJDUMP) -D -m arm tools/system > tools/system.dis
 
-tools/system: boot/head.o init/main.o
+tools/system: boot/head.o init/main.o \
+	$(ARCHIVES)
 	@$(LD) $(LDFLAGS) boot/head.o init/main.o \
 	$(ARCHIVES) \
 	-o tools/system
