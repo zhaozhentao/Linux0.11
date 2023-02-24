@@ -22,7 +22,7 @@ tools/system: boot/head.o init/main.o
 	-o tools/system
 
 kernel/kernel.o:
-	(cd kernel; make)
+	@make -C kernel
 
 boot/head.o: boot/head.s
 	@make head.o -C boot/
