@@ -2,6 +2,8 @@ include Makefile.header
 
 LDFLAGS	+= -Ttext 0 -e startup_32
 
+ARCHIVES=kernel/kernel.o
+
 all: Image
 
 .c.o:
@@ -15,7 +17,9 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 	@$(OBJDUMP) -D -m arm tools/system > tools/system.dis
 
 tools/system: boot/head.o init/main.o
-	@$(LD) $(LDFLAGS) boot/head.o init/main.o -o tools/system
+	@$(LD) $(LDFLAGS) boot/head.o init/main.o \
+	$(ARCHIVES) \
+	-o tools/system
 
 kernel/kernel.o:
 	(cd kernel; make)
