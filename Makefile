@@ -17,6 +17,9 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 tools/system: boot/head.o init/main.o
 	@$(LD) $(LDFLAGS) boot/head.o init/main.o -o tools/system
 
+kernel/kernel.o:
+	(cd kernel; make)
+
 boot/head.o: boot/head.s
 	@make head.o -C boot/
 
@@ -34,5 +37,4 @@ clean:
 	@rm -f tools/system
 	@for i in boot; do make clean -C $$i; done
 
-init/main.o: init/main.c
-
+init/main.o: init/main.c include/linux/sched.h include/linux/mm.h
