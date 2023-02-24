@@ -34,3 +34,4 @@ clean:
 	@for i in boot; do make clean -C $$i; done
 
 init/main.o: init/main.c
+
