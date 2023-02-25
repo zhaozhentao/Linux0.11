@@ -20,7 +20,7 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 
 tools/system: boot/head.o init/main.o \
 	$(ARCHIVES)
-	@$(LD) $(LDFLAGS) boot/head.o init/main.o \
+	@$(LD) -Tfile.lds $(LDFLAGS) boot/head.o init/main.o \
 	$(ARCHIVES) \
 	-o tools/system
 
