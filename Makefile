@@ -41,7 +41,7 @@ boot/bootsect: boot/bootsect.s
 
 clean:
 	@rm -f Image system.map boot/bootsect boot/setup boot/interrupt
-	@rm -f init/*.o tools/system
+	@rm -f init/*.o tools/system tools/kernel tools/system.dis
 	@for i in kernel boot; do make clean -C $$i; done
 
 init/main.o: init/main.c include/linux/sched.h include/linux/mm.h
