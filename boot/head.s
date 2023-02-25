@@ -7,12 +7,15 @@
 .equ GPIO_PHYSICS_BASE,      0x56000000
 .equ GPIO_VIRTUAL_BASE,      0xA0000000
 
+.extern stack_start
+
 .global _start
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
+  ldr sp, =stack_start
 loop:
   b   loop
 
