@@ -1,6 +1,6 @@
 include ../Makefile.header
 
-all: bootsect setup interrupt head 
+all: bootsect setup interrupt
 
 bootsect: bootsect.s
 	@$(AS) -o bootsect.o bootsect.s
