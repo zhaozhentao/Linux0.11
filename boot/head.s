@@ -17,7 +17,8 @@ _start:
   bl  mmu_init                                             @ 开启 MMU
 
   ldr r0, =stack_start                                     @ 将变量 stack_start 地址存放到 r0
-  str [r0], sp                                             @ 读出 stack_start 指向的地址，赋值 sp，为跳转到 main 函数准备栈空间
+  ldr r1, [r0]                                             @ 读出 stack_start 指向的地址
+  str r1, sp                                               @ 赋值 sp，为跳转到 main 函数准备栈空间
 loop:
   b   loop
 
