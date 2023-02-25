@@ -1,5 +1,7 @@
 include Makefile.header
 
+print-%  : ; @echo $* = $($*)
+
 LDFLAGS	+= -Ttext 0 -e startup_32
 
 ARCHIVES=kernel/kernel.o
