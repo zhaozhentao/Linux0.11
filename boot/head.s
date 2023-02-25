@@ -17,8 +17,7 @@ _start:
   bl  mmu_init                                             @ 开启 MMU
 
   ldr r0, =stack_start                                     @ 将变量 stack_start 地址存放到 r0
-  ldr r1, [r0]                                             @ 读出 stack_start 指向的地址
-  str r1, sp                                               @ 赋值 sp，为跳转到 main 函数准备栈空间
+  ldr sp, [r0]                                             @ 读出 stack_start 指向的地址,赋值 sp，为跳转到 main 函数准备栈空间
 loop:
   b   loop
 
@@ -40,7 +39,7 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   ldr r3, [r0, $8]
   bic r3, r3, $37
   str r3, [r0, $8]
-  mov  pc, lr                                              @ 返回
+  mov pc, lr                                              @ 返回
 
 create_page_table:
   ldr  r0, MMU_TLB_BASE                                    @ 映射表基地址
