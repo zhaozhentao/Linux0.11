@@ -48,7 +48,7 @@ print_booting_msg:
   mov  pc, lr                 @ 返回
 
 SDRAM_BASE:
-  .word 0x30000000            @ SDRAM 起始地址，setup 模块执行完后，system 模块起始地址就是 SDRAM_BASE
+  .word 0x30004000            @ SDRAM 起始地址，setup 模块执行完后，system 模块起始地址就是 SDRAM_BASE
 INTERRUPT:
   .word 0x30090400            @ interrupt 模块被 bootsect 移动后的地址
 HEAD:
