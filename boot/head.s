@@ -50,7 +50,7 @@ create_page_table:
  * 简化代码就是 MMU_TLB_BASE[virtal >> 20] = (physics >> 20) | MMU_SECDESC
  */
   adrl r1, mmu_table                                       @ r1 保存 mmu_table 起始地址
-  add  r2, r0, $(4 * 4)                                    @ r2 保存 mmu_table 结束地址，结束地址 = 起始地址 + (4 * 4)
+  add  r2, r1, $(4 * 4)                                    @ r2 保存 mmu_table 结束地址，结束地址 = 起始地址 + (4 * 4)
 
 1:
   ldr  r3, [r1], $4                                        @ 读取 mmu_table 数组中第 n 个元素保存到 r3, 然后 r1 指向下一个元素，即读取映射设置
