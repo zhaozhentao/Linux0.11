@@ -74,6 +74,7 @@ mmu_init:
 
   mrc  p15, 0, r0, c1, c0, 0
   bic  r0, r0, $0x3000
+  bic  r0, r0, $0x0300
   bic  r0, r0, $0x0087
 
   orr  r0, r0, $0x0002
