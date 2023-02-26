@@ -1,9 +1,8 @@
 
-void create_page_table(void) {
 
-    /*
-    * 用于段描述符的一些宏定义
-    */
+/*
+* 用于段描述符的一些宏定义
+*/
 #define MMU_FULL_ACCESS     (3 << 10)   /* 访问权限 */
 #define MMU_DOMAIN          (0 << 5)    /* 属于哪个域 */
 #define MMU_SPECIAL         (1 << 4)    /* 必须是1 */
@@ -16,6 +15,7 @@ void create_page_table(void) {
                              MMU_CACHEABLE | MMU_BUFFERABLE | MMU_SECTION)
 #define MMU_SECTION_SIZE    0x00100000
 
+void create_page_table(void) {
     unsigned long virtuladdr, physicaladdr;
     unsigned long *mmu_tlb_base = (unsigned long *) 0x30008000;
 
@@ -26,34 +26,11 @@ void create_page_table(void) {
      */
     virtuladdr = 0;
     physicaladdr = 0;
-    *(mmu_tlb_base + (virtuladdr >> 20)) = (physicaladdr & 0xFFF00000) | \
-                                            MMU_SECDESC_WB;
-
-    /*
-     * 0x56000000是GPIO寄存器的起始物理地址，
-     * GPBCON和GPBDAT这两个寄存器的物理地址0x56000010、0x56000014，
-     * 为了在第二部分程序中能以地址0xA0000010、0xA0000014来操作GPBCON、GPBDAT，
-     * 把从0xA0000000开始的1M虚拟地址空间映射到从0x56000000开始的1M物理地址空间
-     */
-    virtuladdr = 0xA0000000;
-    physicaladdr = 0x56000000;
-    *(mmu_tlb_base + (virtuladdr >> 20)) = (physicaladdr & 0xFFF00000) | \
-                                            MMU_SECDESC;
-
-    /*
-     * SDRAM的物理地址范围是0x30000000～0x33FFFFFF，
-     * 将虚拟地址0xB0000000～0xB3FFFFFF映射到物理地址0x30000000～0x33FFFFFF上，
-     * 总共64M，涉及64个段描述符
-     */
+    *(mmu_tlb_base + (virtuladdr >> 20)) = (physicaladdr & 0xFFF00000) | MMU_SECDESC_WB;
 
     virtuladdr = 0x30000000;
     physicaladdr = 0x30000000;
-    while (virtuladdr < 0x34000000) {
-        *(mmu_tlb_base + (virtuladdr >> 20)) = (physicaladdr & 0xFFF00000) | \
-                                                MMU_SECDESC_WB;
-        virtuladdr += 0x100000;
-        physicaladdr += 0x100000;
-    }
+    *(mmu_tlb_base + (virtuladdr >> 20)) = (physicaladdr & 0xFFF00000) | MMU_SECDESC_WB;
 }
 
 void mmu_init(void) {
