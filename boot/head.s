@@ -87,9 +87,9 @@ mmu_init:
   mov  pc, lr                                              @ 返回
 
 mmu_table:
-  .word((SRAM_PHYSICS_BASE >> 20) | MMU_SECDESC_WB)        @ SDRAM 1M 映射设置
+  .word((SRAM_PHYSICS_BASE & 0xFFF00000) | MMU_SECDESC_WB) @ SDRAM 1M 映射设置
   .word(SRAM_VIRTUAL_BASE >> 20)                           @ SDRAM 1M 映射表项
-  .word((SDRAM_PHYSICS_BASE >> 20) | MMU_SECDESC_WB)       @ 0x30000000 ~ 0x30100000 映射设置
+  .word((SDRAM_PHYSICS_BASE & 0xFFF00000) | MMU_SECDESC_WB)@ 0x30000000 ~ 0x30100000 映射设置
   .word(SDRAM_VIRTUAL_BASE >> 20)                          @ 0x30000000 ~ 0x30100000 映射表项
 
 GPFCON:                                                    @ GPFCON 寄存器
