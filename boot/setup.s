@@ -9,8 +9,8 @@ _start:
   ldr pc, SDRAM_BASE          @ 跳转到 head 模块
 
 set_params:
-  ldr r0, $0x30090002         @ 扩展内存保存地址
-  ldr r1, $0x3B80             @ 系统从 1MB 开始的扩展内存数 (14KB)，需要 << 10，实际是 14MB
+  ldr r0, =0x30090002         @ 扩展内存保存地址
+  ldr r1, =0x3B80             @ 系统从 1MB 开始的扩展内存数 (14KB)，需要 << 10，实际是 14MB
   str r1, [r0]
   mov  pc, lr                 @ 返回
 
