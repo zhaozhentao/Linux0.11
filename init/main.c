@@ -28,7 +28,7 @@ struct drive_info {
 
 void create_page_table(void) {
     unsigned long virtuladdr, physicaladdr;
-    unsigned long *mmu_tlb_base = (unsigned long *) 0x30008000;
+    unsigned long *mmu_tlb_base = (unsigned long *) 0x30000000;
 
     /*
      * Steppingstone的起始物理地址为0，第一部分程序的起始运行地址也是0，
@@ -45,7 +45,7 @@ void create_page_table(void) {
 }
 
 void mmu_init(void) {
-    unsigned long ttb = 0x30008000;
+    unsigned long ttb = 0x30000000;
 
     __asm__(
             "mov    r0, #0\n"
@@ -59,8 +59,8 @@ void mmu_init(void) {
 
             "mvn    r0, #0\n"
             "mcr    p15, 0, r0, c3, c0, 0\n"    /* 域访问控制寄存器设为0xFFFFFFFF，
-                                     * 不进行权限检查
-                                     */
+                                                 * 不进行权限检查
+                                                 */
             /*
              * 对于控制寄存器，先读出其值，在这基础上修改感兴趣的位，
              * 然后再写入
