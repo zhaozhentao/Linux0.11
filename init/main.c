@@ -1,5 +1,7 @@
 #include <linux/fs.h>
 
+extern void mem_init(long start, long end);
+
 #define EXT_MEM_K (*(unsigned short *)0x30090002)
 #define DRIVE_INFO (*(struct drive_info *)0x30090080)
 #define ORIG_ROOT_DEV (*(unsigned short *)0x300901FC)
