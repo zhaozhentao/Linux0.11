@@ -19,7 +19,7 @@ void main(void) {
      */
     ROOT_DEV = ORIG_ROOT_DEV;
     drive_info = DRIVE_INFO;
-    memory_end = (1<<20) + (EXT_MEM_K<<10);
+    memory_end = (1 << 20) + (EXT_MEM_K << 10);
     memory_end &= 0xfffff000;
 
     while (1) {
