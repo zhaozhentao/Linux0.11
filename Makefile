@@ -4,7 +4,7 @@ print-%  : ; @echo $* = $($*)
 
 LDFLAGS	+= -e _start
 
-ARCHIVES=kernel/kernel.o fs/fs.o
+ARCHIVES=kernel/kernel.o mm/mm.o fs/fs.o
 
 all: Image
 
@@ -31,6 +31,9 @@ tools/system: boot/head.o init/main.o \
 kernel/kernel.o:
 	make -C kernel
 
+mm/mm.o:
+	make -C mm
+
 fs/fs.o:
 	make -C fs
 
@@ -49,7 +52,7 @@ boot/bootsect: boot/bootsect.s
 clean:
 	rm -f Image system.map boot/bootsect boot/setup boot/interrupt
 	rm -f init/*.o tools/system tools/kernel tools/system.dis
-	for i in kernel boot; do make clean -C $$i; done
+	for i in mm kernel boot; do make clean -C $$i; done
 
 init/main.o: init/main.c \
 	include/linux/sched.h \
