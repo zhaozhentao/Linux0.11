@@ -9,7 +9,7 @@ ARCHIVES=kernel/kernel.o
 all: Image
 
 .c.o:
-	@$(CC) $(CFLAGS) -c -o $*.o $<
+	$(CC) $(CFLAGS) -O2 -c -o $*.o $<
 
 Image: boot/bootsect boot/setup boot/interrupt tools/system
 	@cp -f tools/system system.tmp
