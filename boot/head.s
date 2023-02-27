@@ -58,22 +58,26 @@ mmu_init:
   mov r3, $0x30000000
   add r3, r3, $0x8000
   mov r0, $0
-  mcr 15, 0, r0, cr7, cr7, {0}
-  mcr 15, 0, r0, cr7, cr10, {4}
-  mcr 15, 0, r0, cr8, cr7, {0}
+  mcr p15, 0, r0, c7, c7, 0
+  mcr p15, 0, r0, c7, c10, 4
+  mcr p15, 0, r0, c8, c7, 0
   mov r4, r3
-  mcr 15, 0, r4, cr2, cr0, {0}
+  mcr p15, 0, r4, c2, c0, 0
   mvn r0, $0x0
-  mcr 15, 0, r0, cr3, cr0, {0}
-  mrc 15, 0, r0, cr1, cr0, {0}
+  mcr p15, 0, r0, c3, c0, 0
+  mrc p15, 0, r0, c1, c0, 0
+
   bic r0, r0, $0x3000
   bic r0, r0, $0x300
   bic r0, r0, $0x87
+
   orr r0, r0, $0x2
   orr r0, r0, $0x4
   orr r0, r0, $0x1000
   orr r0, r0, $1
-  mcr 15, 0, r0, cr1, cr0, {0}
+
+  mcr p15, 0, r0, c1, c0, 0
+
   mov pc, lr
 
 mmu_table:
