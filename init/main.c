@@ -6,6 +6,7 @@
 
 static long memory_end = 0;
 static long buffer_memory_end = 0;
+static long main_memory_start = 0;
 
 struct drive_info {
     char dummy[32];
@@ -116,8 +117,15 @@ void main(void) {
     if (memory_end > 16 * 1024 * 1024)
         memory_end = 16 * 1024 * 1024;
 
-    if (memory_end > 12 * 1024 * 1024)
+    if (memory_end > 12 * 1024 * 1024) {
         buffer_memory_end = 4 * 1024 * 1024;
+    } else if (memory_end > 6 * 1024 * 1024) {
+        buffer_memory_end = 2 * 1024 * 1024;
+    } else {
+        buffer_memory_end = 1 * 1024 * 1024;
+    }
+    main_memory_start = buffer_memory_end;
+    // todo ramdisk
 
     while (1) {
 
