@@ -3,12 +3,16 @@
 .global _start
 _start:
   bl  print_booting_msg
+  bl  set_params              @ 保存参数到内存中
   bl  mov_irq_table           @ 将中断模块复制到 0 地址，覆盖原来的 bootsect 模块
   bl  mov_system              @ 将 system (包含 head ) 模块搬运到 SDRAM 起始地址
   ldr pc, SDRAM_BASE          @ 跳转到 head 模块
 
-loop:
-  b loop
+set_params:
+  ldr r0, $0x30090002         @ 扩展内存保存地址
+  ldr r1, $0x3B80             @ 系统从 1MB 开始的扩展内存数 (14KB)，需要 << 10，实际是 14MB
+  str r1, [r0]
+  mov  pc, lr                 @ 返回
 
 mov_irq_table:                @ 先设置好要复制的源和目的地
   ldr  r1, INTERRUPT          @ 从 0x30090400 地址开始复制
