@@ -8,8 +8,12 @@ ARCHIVES=kernel/kernel.o fs/fs.o
 
 all: Image
 
+.c.s:
+	$(CC) $(CFLAGS) -nostdinc -Iinclude -S -o $*.s $<
+.s.o:
+	$(AS) -c -o $*.o $<
 .c.o:
-	$(CC) $(CFLAGS) -O2 -c -o $*.o $<
+	$(CC) $(CFLAGS) -nostdinc -Iinclude -c -o $*.o $<
 
 Image: boot/bootsect boot/setup boot/interrupt tools/system
 	cp -f tools/system system.tmp
@@ -28,7 +32,7 @@ kernel/kernel.o:
 	make -C kernel
 
 fs/fs.o:
-	(cd fs; make)
+	make -C fs
 
 boot/head.o: boot/head.s
 	make head.o -C boot/

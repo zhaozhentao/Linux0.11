@@ -2,7 +2,7 @@ include ../Makefile.header
 
 CFLAGS	+= -I../include
 
-OBJS  = super.o
+OBJS = super.o
 
 fs.o: $(OBJS)
 	@$(LD) -r -o fs.o $(OBJS)
