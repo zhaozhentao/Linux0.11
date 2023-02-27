@@ -1,7 +1,7 @@
 #include <linux/fs.h>
 
-#define EXT_MEM_K (*(unsigned short *)0x90002)
-#define DRIVE_INFO (*(struct drive_info *)0x90080)
+#define EXT_MEM_K (*(unsigned short *)0x30090002)
+#define DRIVE_INFO (*(struct drive_info *)0x30090080)
 #define ORIG_ROOT_DEV (*(unsigned short *)0x901FC)
 
 static long memory_end = 0;
@@ -18,6 +18,10 @@ void main(void) {
      * Interrupts are still disabled. Do necessary setups, then
      * enable them
      */
+    while (1) {
+
+    }
+
     ROOT_DEV = ORIG_ROOT_DEV;
     drive_info = DRIVE_INFO;
     memory_end = (1 << 20) + (EXT_MEM_K << 10);
