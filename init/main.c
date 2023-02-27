@@ -5,7 +5,7 @@
 void main(void) {
     ROOT_DEV = ORIG_ROOT_DEV;
 
-    while(1) {
+    while (1) {
 
     }
 }

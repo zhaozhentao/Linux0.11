@@ -55,3 +55,4 @@ init/main.o: init/main.c \
 	include/linux/sched.h \
 	include/linux/fs.h \
 	include/linux/mm.h
+	$(CC) $(CFLAGS) -O2 -nostdinc -Iinclude -c -o $*.o $<
