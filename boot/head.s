@@ -15,11 +15,11 @@
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
-  bl  create_page_table                                    @ 设置 MMU 映射
-  bl  mmu_init                                             @ 开启 MMU
-
   ldr r0, =stack_start                                     @ 将变量 stack_start 地址存放到 r0
   ldr sp, [r0]                                             @ 读出 stack_start 指向的地址,赋值 sp，为跳转到 main 函数准备栈空间
+
+  bl  create_page_table                                    @ 设置 MMU 映射
+  bl  mmu_init                                             @ 开启 MMU
 
   bl  main                                                 @ 跳转到 main
 
@@ -42,42 +42,6 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   bic r3, r3, $37
   str r3, [r0, $8]
   mov pc, lr                                              @ 返回
-
-create_page_table:
-  mov r3, $0xc10
-  mov r1, $0x30000000
-  add r3, r3, $0xe
-  add r2, r1, $0x8000
-  orr r0, r3, r1
-  str r3, [r2]
-  str r0, [r2, r1, lsr $18]
-  mov pc, lr
-
-mmu_init:
-  mov r3, $0x30000000
-  add r3, r3, $0x8000
-  mov r0, $0
-  mcr p15, 0, r0, c7, c7, 0
-  mcr p15, 0, r0, c7, c10, 4
-  mcr p15, 0, r0, c8, c7, 0
-  mov r4, r3
-  mcr p15, 0, r4, c2, c0, 0
-  mvn r0, $0x0
-  mcr p15, 0, r0, c3, c0, 0
-  mrc p15, 0, r0, c1, c0, 0
-
-  bic r0, r0, $0x3000
-  bic r0, r0, $0x300
-  bic r0, r0, $0x87
-
-  orr r0, r0, $0x2
-  orr r0, r0, $0x4
-  orr r0, r0, $0x1000
-  orr r0, r0, $1
-
-  mcr p15, 0, r0, c1, c0, 0
-
-  mov pc, lr
 
 mmu_table:
   .word((SRAM_PHYSICS_BASE & 0xFFF00000) | MMU_SECDESC_WB) @ SDRAM 1M 映射设置
