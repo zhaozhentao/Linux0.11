@@ -21,8 +21,7 @@ _start:
   ldr r0, =stack_start                                     @ 将变量 stack_start 地址存放到 r0
   ldr sp, [r0]                                             @ 读出 stack_start 指向的地址,赋值 sp，为跳转到 main 函数准备栈空间
 
-  ldr r0, =main
-  mov pc, r0                                               @ 跳转到 main
+  bl  main                                                 @ 跳转到 main
 
 setup_interrupt:                                           @ 初始化 GPIO 引脚为外部中断, GPIO 引脚用作外部中断时，默认为低电平触发、IRQ方式(不用设置INTMOD)
   mov r2, $0x800000
