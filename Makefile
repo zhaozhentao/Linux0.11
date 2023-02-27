@@ -4,7 +4,7 @@ print-%  : ; @echo $* = $($*)
 
 LDFLAGS	+= -e _start
 
-ARCHIVES=kernel/kernel.o
+ARCHIVES=kernel/kernel.o fs/fs.o
 
 all: Image
 
@@ -26,6 +26,9 @@ tools/system: boot/head.o init/main.o \
 
 kernel/kernel.o:
 	make -C kernel
+
+fs/fs.o:
+	(cd fs; make)
 
 boot/head.o: boot/head.s
 	make head.o -C boot/
