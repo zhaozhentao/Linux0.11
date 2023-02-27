@@ -14,7 +14,7 @@ all: Image
 Image: boot/bootsect boot/setup boot/interrupt tools/system
 	cp -f tools/system system.tmp
 	$(STRIP) system.tmp
-	$(OBJCOPY) -O binary -R .note -R .comment system.tmp tools/kernel
+	$(OBJCOPY) -O binary -R .note -R .comment -S system.tmp tools/kernel
 	tools/build.sh boot/bootsect boot/setup boot/interrupt tools/kernel Image
 	$(OBJDUMP) -D -m arm tools/system > tools/system.dis
 
