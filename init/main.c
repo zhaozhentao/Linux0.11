@@ -130,6 +130,7 @@ void main(void) {
     // todo ramdisk
 
     mem_init(main_memory_start,memory_end);
+    trap_init();
 
     while (1) {
 
