@@ -6,7 +6,7 @@ CFLAGS	+= -I../include
 .s.o:
 	@$(AS) -o $*.o $<
 
-OBJS  = sched.o traps.o asm.o
+OBJS  = sched.o asm.o traps.o
 
 kernel.o: $(OBJS)
 	@$(LD) $(LDFLAGS) -o kernel.o $(OBJS)
