@@ -7,13 +7,12 @@ static long HIGH_MEMORY = 0;
 #define MAP_NR(addr) (((addr)-LOW_MEM)>>12)
 #define USED 100
 
-static unsigned char mem_map[PAGING_PAGES] = {0,};
+unsigned char mem_map[PAGING_PAGES] = {0,};
 
 void mem_init(long start_mem, long end_mem) {
     int i;
 
     HIGH_MEMORY = end_mem;
-
     for (i = 0; i < PAGING_PAGES; i++) {
         mem_map[i] = USED;
     }
