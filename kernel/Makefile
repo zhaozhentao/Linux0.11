@@ -4,7 +4,7 @@ LDFLAGS	+= -r
 
 CFLAGS	+= -I../include
 
-OBJS  = sched.o traps.o
+OBJS  = sched.o traps.o asm.o
 
 kernel.o: $(OBJS)
 	@$(LD) $(LDFLAGS) -o kernel.o $(OBJS)
