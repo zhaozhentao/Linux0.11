@@ -1,8 +1,10 @@
 include ../Makefile.header
 
 LDFLAGS	+= -r
-
 CFLAGS	+= -I../include
+
+.s.o:
+	@$(AS) -o $*.o $<
 
 OBJS  = sched.o traps.o asm.o
 
