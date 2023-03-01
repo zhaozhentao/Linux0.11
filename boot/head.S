@@ -62,6 +62,7 @@ MMU_TLB_BASE:
 
 __vectors_start:
   ARM(swi SYS_ERROR0)
+  THUMB(svc $0)
 
 __vectors_end:
 
