@@ -61,7 +61,7 @@ MMU_TLB_BASE:
   .word 0x30000000
 
 __vectors_start:
-  swi SYS_ERROR0
+  ARM(swi SYS_ERROR0)
 
 __vectors_end:
 
