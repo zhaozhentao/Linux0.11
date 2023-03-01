@@ -20,15 +20,9 @@ interrupt: interrupt.s
 	@$(OBJCOPY) -R .pdr -R .comment -R .note -O binary -S interrupt_elf interrupt
 	@$(OBJDUMP) -D -m arm interrupt_elf > interrupt_elf.dis
 
-head.o: head.s
-	@$(AS) -o head.o head.s
-
-head_dis: head.s
-	@$(AS) -o head.o head.s
-	@$(LD) -Ttext 0x30000000 -g head.o -o head_elf
-	@$(OBJCOPY) -R .pdr -R .comment -R .note -O binary -S head_elf head
-	@$(OBJDUMP) -D -m arm head_elf > head_elf.dis
+head.o: head.S
+	@$(CC) -c head.S
 
 clean:
-	rm -f *.o bootsect setup interrupt *.dis *_elf
+	rm -f head.s *.o bootsect setup interrupt *.dis *_elf
 

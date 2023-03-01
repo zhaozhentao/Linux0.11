@@ -3,4 +3,5 @@
 system.tmp
 *.dis
 *elf
+Image
 

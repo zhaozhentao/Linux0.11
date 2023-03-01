@@ -1,5 +1,7 @@
 @ head.s  (c) 2023 zhaozhentao
 
+#include "unified.h"
+
 .equ MMU_SECDESC,            3090
 .equ MMU_SECDESC_WB,         3102
 .equ SRAM_PHYSICS_BASE,      0x0
@@ -59,7 +61,7 @@ MMU_TLB_BASE:
   .word 0x30000000
 
 __vectors_start:
-  swi 10420224
+  swi SYS_ERROR0
 
 __vectors_end:
 
