@@ -69,6 +69,7 @@ __stubs_end:
 __vectors_start:
   ARM(swi SYS_ERROR0)
   THUMB(svc $0)
+  THUMB(nop)
 
 __vectors_end:
 
