@@ -4,4 +4,6 @@ system.tmp
 *.dis
 *elf
 Image
-
+boot/bootsect
+boot/setup
+boot/interrupt
