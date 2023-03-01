@@ -11,7 +11,7 @@
 
 .extern stack_start
 
-.global _start
+.global _start, __vectors_start, __vectors_end
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
@@ -57,6 +57,12 @@ EINTMASK:                                                  @ EINTMASK 寄存器
   .word 0x560000a4
 MMU_TLB_BASE:
   .word 0x30000000
+
+__vectors_start:
+  swi 10420224
+
+__vectors_end:
+
 
 @ 这里是 head 模块编译后距离起点 0x1000 地址处
 @.org 0x1000
