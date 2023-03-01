@@ -5,4 +5,7 @@ system.tmp
 *elf
 Image
 head.s
+boot/bootsect
+boot/setup
+boot/interrupt
 
