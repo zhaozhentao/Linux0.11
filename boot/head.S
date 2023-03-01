@@ -60,6 +60,12 @@ EINTMASK:                                                  @ EINTMASK 寄存器
 MMU_TLB_BASE:
   .word 0x30000000
 
+.global __stubs_start
+__stubs_start:
+
+__stubs_end:
+    .equ stubs_offset, __vectors_start + 0x200 - __stubs_start
+
 __vectors_start:
   ARM(swi SYS_ERROR0)
   THUMB(svc $0)
