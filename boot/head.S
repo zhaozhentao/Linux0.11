@@ -1,7 +1,5 @@
 @ head.s  (c) 2023 zhaozhentao
 
-#include "unified.h"
-
 .equ MMU_SECDESC,            3090
 .equ MMU_SECDESC_WB,         3102
 .equ SRAM_PHYSICS_BASE,      0x0
@@ -59,6 +57,9 @@ EINTMASK:                                                  @ EINTMASK 寄存器
   .word 0x560000a4
 MMU_TLB_BASE:
   .word 0x30000000
+
+__und_usr:
+
 
 .macro	vector_stub, name, mode, correction=0
 .align	5

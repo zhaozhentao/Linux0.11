@@ -21,7 +21,9 @@ interrupt: interrupt.s
 	@$(OBJDUMP) -D -m arm interrupt_elf > interrupt_elf.dis
 
 head.o: head.S
-	@$(CC) -include ../include/linux/linkage.h \
+	@$(CC)                                     \
+	-include ../include/linux/linkage.h        \
+	-include ../arch/arm/include/asm/unified.h \
 	-include ../arch/arm/include/asm/ptrace.h  \
 	-c -o head.o head.S
 
