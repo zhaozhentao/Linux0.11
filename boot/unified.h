@@ -1,3 +1,5 @@
+#define PSR_ISETSTATE	0
+
 #define ARM(x...)	x
 #define THUMB(x...)
 #define W(instr)    instr
