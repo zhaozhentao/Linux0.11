@@ -13,7 +13,7 @@
 
 .extern stack_start
 
-.global _start, __vectors_start, __vectors_end
+.global _start, __vectors_start, __vectors_end, __stubs_start
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
@@ -60,8 +60,21 @@ EINTMASK:                                                  @ EINTMASK 寄存器
 MMU_TLB_BASE:
   .word 0x30000000
 
-.global __stubs_start
+.macro  vector_stub, name, mode, correction=0
+  .align  5
+
+  vector_\name:
+    .if \correction
+    sub  lr, lr, #\correction
+    .endif
+    ENDPROC(vector_\name)
+    .align 2
+.endm
+
 __stubs_start:
+  vector_stub und, UND_MODE
+  mov r0, r0
+  .align 5
 
 __stubs_end:
     .equ stubs_offset, __vectors_start + 0x200 - __stubs_start
@@ -73,7 +86,6 @@ __vectors_start:
   W(b)  vector_und + stubs_offset
 
 __vectors_end:
-
 
 @ 这里是 head 模块编译后距离起点 0x1000 地址处
 @.org 0x1000

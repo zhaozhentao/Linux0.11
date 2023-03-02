@@ -21,7 +21,7 @@ interrupt: interrupt.s
 	@$(OBJDUMP) -D -m arm interrupt_elf > interrupt_elf.dis
 
 head.o: head.S
-	@$(CC) -c head.S
+	@$(CC) -include ../include/linux/linkage.h -c -o head.o head.S
 
 clean:
 	rm -f head.s *.o bootsect setup interrupt *.dis *_elf
