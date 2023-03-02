@@ -8,4 +8,6 @@ head.s
 boot/bootsect
 boot/setup
 boot/interrupt
+tools/kernel
+tools/system
 
