@@ -70,6 +70,7 @@ __vectors_start:
   ARM(swi SYS_ERROR0)
   THUMB(svc $0)
   THUMB(nop)
+  W(b)  vector_und + stubs_offset
 
 __vectors_end:
 
