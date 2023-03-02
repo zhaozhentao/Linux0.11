@@ -64,40 +64,40 @@ MMU_TLB_BASE:
 .align	5
 
 vector_\name:
-	.if \correction
-	sub	lr, lr, #\correction
-	.endif
+  .if \correction
+  sub  lr, lr, #\correction
+  .endif
 
-	@
-	@ Save r0, lr_<exception> (parent PC) and spsr_<exception>
-	@ (parent CPSR)
-	@
-	stmia	sp, {r0, lr}		@ save r0, lr
-	mrs	lr, spsr
-	str	lr, [sp, #8]		@ save spsr
+  @
+  @ Save r0, lr_<exception> (parent PC) and spsr_<exception>
+  @ (parent CPSR)
+  @
+  stmia sp, {r0, lr}        @ save r0, lr
+  mrs  lr, spsr
+  str  lr, [sp, #8]         @ save spsr
 
-	@
-	@ Prepare for SVC32 mode.  IRQs remain disabled.
-	@
-	mrs	r0, cpsr
-	eor	r0, r0, #(\mode ^ SVC_MODE | PSR_ISETSTATE)
-	msr	spsr_cxsf, r0
+  @
+  @ Prepare for SVC32 mode.  IRQs remain disabled.
+  @
+  mrs  r0, cpsr
+  eor  r0, r0, #(\mode ^ SVC_MODE | PSR_ISETSTATE)
+  msr  spsr_cxsf, r0
 
-	@
-	@ the branch table must immediately follow this code
-	@
-	and	lr, lr, #0x0f
- THUMB(	adr	r0, 1f			)
- THUMB(	ldr	lr, [r0, lr, lsl #2]	)
-	mov	r0, sp
- ARM(	ldr	lr, [pc, lr, lsl #2]	)
-	movs	pc, lr			@ branch to handler in SVC mode
-ENDPROC(vector_\name)
+  @
+  @ the branch table must immediately follow this code
+  @
+  and  lr, lr, #0x0f
+  THUMB(adr r0, 1f)
+  THUMB(ldr lr, [r0, lr, lsl  $2])
+  mov r0, sp
+  ARM(ldr  lr, [pc, lr, lsl #2])
+  movs  pc, lr               @ branch to handler in SVC mode
+  ENDPROC(vector_\name)
 
-	.align	2
-	@ handler addresses follow this label
+  .align 2
+  @ handler addresses follow this label
 1:
-	.endm
+  .endm
 
 __stubs_start:
   vector_stub und, UND_MODE
