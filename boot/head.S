@@ -100,8 +100,8 @@ vector_\name:
   .endm
 
 __stubs_start:
-  vector_stub und, UND_MODE
-  mov r0, r0
+vector_stub und, UND_MODE
+  .long  __und_usr                                        @ 0 (USR_26 / USR_32)
   .align 5
 
 __stubs_end:
