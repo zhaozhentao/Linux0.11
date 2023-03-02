@@ -107,14 +107,18 @@ vector_stub und, UND_MODE
   .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
   .align 5
 
+.LCvswi:
+	.word	vector_swi
+
 __stubs_end:
     .equ stubs_offset, __vectors_start + 0x200 - __stubs_start
 
 __vectors_start:
-  ARM(swi SYS_ERROR0)
+  ARM(swi SYS_ERROR0)                                     @ reset 复位
   THUMB(svc $0)
   THUMB(nop)
-  W(b)  vector_und + stubs_offset
+  W(b)   vector_und + stubs_offset                        @ Undefined Instruction 未定义指令，这里跳转到经过 traps.c trap_init() 移动后的位置
+  W(ldr) pc, .LCvswi + stubs_offset                       @ Software Interrupt，软件中断
 
 __vectors_end:
 
