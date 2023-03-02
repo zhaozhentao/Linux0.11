@@ -58,8 +58,9 @@ EINTMASK:                                                  @ EINTMASK 寄存器
 MMU_TLB_BASE:
   .word 0x30000000
 
-__und_usr:
+__und_invalid:
 
+__und_usr:
 
 .macro	vector_stub, name, mode, correction=0
 .align	5
@@ -103,6 +104,7 @@ vector_\name:
 __stubs_start:
 vector_stub und, UND_MODE
   .long  __und_usr                                        @ 0 (USR_26 / USR_32)
+  .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
   .align 5
 
 __stubs_end:
