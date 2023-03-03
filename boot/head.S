@@ -121,9 +121,24 @@ vector_stub dabt, ABT_MODE, 8
  */
 vector_stub pabt, ABT_MODE, 4
 
+/** Undefined Instruction 未定义指令中断 **/
 vector_stub und, UND_MODE
-  .long  __und_usr                                        @ 0 (USR_26 / USR_32)
-  .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
+  .long  __und_usr                       @  0 (USR_26 / USR_32)
+  .long  __und_invalid                   @  1 (FIQ_26 / FIQ_32)
+  .long  __und_invalid                   @  2 (IRQ_26 / IRQ_32)
+  .long  __und_svc                       @  3 (SVC_26 / SVC_32)
+  .long  __und_invalid                   @  4
+  .long  __und_invalid                   @  5
+  .long  __und_invalid                   @  6
+  .long  __und_invalid                   @  7
+  .long  __und_invalid                   @  8
+  .long  __und_invalid                   @  9
+  .long  __und_invalid                   @  a
+  .long  __und_invalid                   @  b
+  .long  __und_invalid                   @  c
+  .long  __und_invalid                   @  d
+  .long  __und_invalid                   @  e
+  .long  __und_invalid                   @  f
   .align 5
 
 /** Linux 中没有使用 fiq 中断 **/
