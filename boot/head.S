@@ -69,12 +69,12 @@ MMU_TLB_BASE:
 .macro  usr_entry
   UNWIND(.fnstart)                                         @ 实际上是空语句
   UNWIND(.cantunwind)                                      @ 实际上是空语句 don't unwind the user space
-  sub  sp, sp, #S_FRAME_SIZE
+  sub  sp, sp, $S_FRAME_SIZE
   ARM(stmib sp, {r1 - r12})
 
   ldmia  r0, {r1 - r3}
-  add r0, sp, #S_PC       @ here for interlock avoidance
-  mov r4, #-1         @  ""  ""     ""        ""
+  add r0, sp, $S_PC                                        @ here for interlock avoidance
+  mov r4, $-1                                              @  ""  ""     ""        ""
 
   str r1, [sp]                                             @ save the "real" r0 copied
                                                            @ from the exception stack
@@ -208,10 +208,10 @@ vector_fiq:
 vector_addrexcptn:
   b  vector_addrexcptn
 
-/*
- * We group all the following data together to optimise
- * for CPUs with separate I & D caches.
- */
+  /*
+   * We group all the following data together to optimise
+   * for CPUs with separate I & D caches.
+   */
   .align  5
 
 .LCvswi:
