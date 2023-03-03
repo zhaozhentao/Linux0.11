@@ -1,3 +1,4 @@
 #define SVC_MODE    0x00000013
 
+#define ABT_MODE	0x00000017
 #define UND_MODE    0x0000001b

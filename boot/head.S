@@ -102,6 +102,12 @@ vector_\name:
   .endm
 
 __stubs_start:
+/*
+ * Prefetch Abort 分发
+ * 进入 Abort 模式, spsr = USR CPSR, lr = USR PC
+ */
+vector_stub pabt, ABT_MODE, 4
+
 vector_stub und, UND_MODE
   .long  __und_usr                                        @ 0 (USR_26 / USR_32)
   .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
@@ -119,6 +125,7 @@ __vectors_start:
   THUMB(nop)
   W(b)   vector_und + stubs_offset                        @ Undefined Instruction 未定义指令，这里跳转到经过 traps.c trap_init() 移动后的位置
   W(ldr) pc, .LCvswi + stubs_offset                       @ Software Interrupt，软件中断
+  W(b)   vector_pabt + stubs_offset                       @ Abort (prefetch)
 
 __vectors_end:
 
