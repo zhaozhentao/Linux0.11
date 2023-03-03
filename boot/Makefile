@@ -21,11 +21,15 @@ interrupt: interrupt.s
 	@$(OBJDUMP) -D -m arm interrupt_elf > interrupt_elf.dis
 
 head.o: head.S
-	@$(CC)                                     \
-	-I../arch/arm/mach-s3c2410/include         \
-	-include ../include/linux/linkage.h        \
-	-include ../arch/arm/include/asm/unified.h \
-	-include ../arch/arm/include/asm/ptrace.h  \
+	@$(CC)                                       \
+	-I../include                                 \
+	-I../arch/arm/include                        \
+	-I../arch/arm/mach-s3c2410/include           \
+	-include ../include/linux/autoconf.h         \
+	-include ../include/linux/linkage.h          \
+	-include ../arch/arm/include/asm/assembler.h \
+	-include ../arch/arm/include/asm/unified.h   \
+	-include ../arch/arm/include/asm/ptrace.h    \
 	-c -o head.o head.S
 
 entry-common.o: entry-common.S

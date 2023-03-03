@@ -1,6 +1,9 @@
 @ head.s  (c) 2023 zhaozhentao
 
 #include <mach/entry-macro.S>
+#include <asm/unwind.h>
+
+#include "entry-header.S"
 
 .equ MMU_SECDESC,            3090
 .equ MMU_SECDESC_WB,         3102
@@ -60,6 +63,46 @@ EINTMASK:                                                  @ EINTMASK 寄存器
 MMU_TLB_BASE:
   .word 0x30000000
 
+.LCcralign:
+  .word  cr_alignment
+
+.macro  usr_entry
+  UNWIND(.fnstart)                                         @ 实际上是空语句
+  UNWIND(.cantunwind)                                      @ 实际上是空语句 don't unwind the user space
+  sub  sp, sp, #S_FRAME_SIZE
+  ARM(stmib sp, {r1 - r12})
+
+  ldmia  r0, {r1 - r3}
+  add r0, sp, #S_PC       @ here for interlock avoidance
+  mov r4, #-1         @  ""  ""     ""        ""
+
+  str r1, [sp]                                             @ save the "real" r0 copied
+                                                           @ from the exception stack
+
+  @ We are now ready to fill in the remaining blanks on the stack:
+  @
+  @  r2 - lr_<exception>, already fixed up for correct return/restart
+  @  r3 - spsr_<exception>
+  @  r4 - orig_r0 (see pt_regs definition in ptrace.h)
+  @
+  @ Also, separately save sp_usr and lr_usr
+  @
+  stmia  r0, {r2 - r4}
+  ARM(stmdb  r0, {sp, lr}^)
+
+  @
+  @ Enable the alignment trap while in kernel mode
+  @
+  alignment_trap r0
+
+  @
+  @ Clear FP to mark the first stack frame
+  @
+  zero_fp
+
+  asm_trace_hardirqs_off
+.endm
+
 __und_invalid:
 
 ENDPROC(__und_invalid)
@@ -69,6 +112,8 @@ __und_svc:
 ENDPROC(__und_svc)
 
 __und_usr:
+  usr_entry
+
 
 ENDPROC(__und_usr)
 
@@ -186,6 +231,9 @@ __vectors_start:
   W(b)   vector_fiq + stubs_offset                        @ fiq 中断
 
 __vectors_end:
+
+cr_alignment:
+  .space 4
 
 @ 这里是 head 模块编译后距离起点 0x1000 地址处
 @.org 0x1000
