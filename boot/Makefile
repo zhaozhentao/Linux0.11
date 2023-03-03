@@ -27,6 +27,13 @@ head.o: head.S
 	-include ../arch/arm/include/asm/ptrace.h  \
 	-c -o head.o head.S
 
+entry-commmon.o: entry-commmon.S
+	@$(CC)                                     \
+	-include ../include/linux/linkage.h        \
+	-include ../arch/arm/include/asm/unified.h \
+	-include ../arch/arm/include/asm/ptrace.h  \
+	-c -o entry-commmon.o entry-commmon.S
+
 clean:
 	rm -f head.s *.o bootsect setup interrupt *.dis *_elf
 
