@@ -22,9 +22,9 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 	$(OBJDUMP) -D -m arm tools/system > tools/system.dis
 	tools/build.sh boot/bootsect boot/setup boot/interrupt tools/kernel Image
 
-tools/system: boot/head.o init/main.o \
+tools/system: boot/head.o boot/entry-common.o init/main.o \
 	$(ARCHIVES)
-	$(LD) -Tfile.lds $(LDFLAGS) boot/head.o init/main.o \
+	$(LD) -Tfile.lds $(LDFLAGS) boot/head.o boot/entry-common.o init/main.o \
 	$(ARCHIVES) \
 	-o tools/system
 
@@ -39,6 +39,9 @@ fs/fs.o:
 
 boot/head.o: boot/head.s
 	make head.o -C boot/
+
+boot/entry-common.o: boot/entry-common.s
+	make entry-common.o -C boot/
 
 boot/interrupt: boot/interrupt.s
 	make interrupt -C boot
