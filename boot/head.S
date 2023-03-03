@@ -62,7 +62,15 @@ MMU_TLB_BASE:
 
 __und_invalid:
 
+ENDPROC(__und_invalid)
+
+__und_svc:
+
+ENDPROC(__und_svc)
+
 __und_usr:
+
+ENDPROC(__und_usr)
 
 .macro	vector_stub, name, mode, correction=0
 .align	5
