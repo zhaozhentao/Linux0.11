@@ -35,5 +35,5 @@ entry-common.o: entry-common.S
 	-c -o entry-common.o entry-common.S
 
 clean:
-	rm -f head.s *.o bootsect setup interrupt *.dis *_elf
+	rm -f head.s entry-common.s *.o bootsect setup interrupt *.dis *_elf
 
