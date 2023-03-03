@@ -126,16 +126,7 @@ vector_stub und, UND_MODE
   .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
   .align 5
 
-/*=============================================================================
- * Undefined FIQs
- *-----------------------------------------------------------------------------
- * Enter in FIQ mode, spsr = ANY CPSR, lr = ANY PC
- * MUST PRESERVE SVC SPSR, but need to switch to SVC mode to show our msg.
- * Basically to switch modes, we *HAVE* to clobber one register...  brain
- * damage alert!  I don't think that we can execute any code in here in any
- * other mode than FIQ...  Ok you can switch to another mode, but you can't
- * get out of that mode without clobbering one register.
- */
+/** Linux 中没有使用 fiq 中断 **/
 vector_fiq:
   disable_fiq
   subs  pc, lr, $4
@@ -163,8 +154,6 @@ __stubs_end:
 
 __vectors_start:
   ARM(swi SYS_ERROR0)                                     @ reset 复位
-  THUMB(svc $0)
-  THUMB(nop)
   W(b)   vector_und + stubs_offset                        @ Undefined Instruction 未定义指令，这里跳转到经过 traps.c trap_init() 移动后的位置
   W(ldr) pc, .LCvswi + stubs_offset                       @ Software Interrupt，软件中断
   W(b)   vector_pabt + stubs_offset                       @ Abort (prefetch)
