@@ -1,5 +1,7 @@
 @ head.s  (c) 2023 zhaozhentao
 
+#include <mach/entry-macro.S>
+
 .equ MMU_SECDESC,            3090
 .equ MMU_SECDESC_WB,         3102
 .equ SRAM_PHYSICS_BASE,      0x0
@@ -103,6 +105,11 @@ vector_\name:
 
 __stubs_start:
 /*
+ * irq 中断分发
+ */
+vector_stub irq, IRQ_MODE, 4
+
+/*
  * Data Abort 分发
  * 进入 Abort 模式, spsr = USR CPSR, lr = USR PC
  */
@@ -119,6 +126,35 @@ vector_stub und, UND_MODE
   .long  __und_invalid                                    @ 1 (FIQ_26 / FIQ_32)
   .align 5
 
+/*=============================================================================
+ * Undefined FIQs
+ *-----------------------------------------------------------------------------
+ * Enter in FIQ mode, spsr = ANY CPSR, lr = ANY PC
+ * MUST PRESERVE SVC SPSR, but need to switch to SVC mode to show our msg.
+ * Basically to switch modes, we *HAVE* to clobber one register...  brain
+ * damage alert!  I don't think that we can execute any code in here in any
+ * other mode than FIQ...  Ok you can switch to another mode, but you can't
+ * get out of that mode without clobbering one register.
+ */
+vector_fiq:
+  disable_fiq
+  subs  pc, lr, $4
+
+/*=============================================================================
+ * Address exception handler
+ *-----------------------------------------------------------------------------
+ * These aren't too critical.
+ * (they're not supposed to happen, and won't happen in 32-bit data mode).
+ */
+vector_addrexcptn:
+  b  vector_addrexcptn
+
+/*
+ * We group all the following data together to optimise
+ * for CPUs with separate I & D caches.
+ */
+  .align  5
+
 .LCvswi:
   .word vector_swi
 
@@ -133,6 +169,9 @@ __vectors_start:
   W(ldr) pc, .LCvswi + stubs_offset                       @ Software Interrupt，软件中断
   W(b)   vector_pabt + stubs_offset                       @ Abort (prefetch)
   W(b)   vector_dabt + stubs_offset                       @ Abort (data)
+  W(b)   vector_addrexcptn + stubs_offset                 @ Reserved 保留中断
+  W(b)   vector_irq + stubs_offset                        @ irq 中断
+  W(b)   vector_fiq + stubs_offset                        @ fiq 中断
 
 __vectors_end:
 

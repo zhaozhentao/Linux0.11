@@ -22,6 +22,7 @@ interrupt: interrupt.s
 
 head.o: head.S
 	@$(CC)                                     \
+	-I../arch/arm/mach-s3c2410/include         \
 	-include ../include/linux/linkage.h        \
 	-include ../arch/arm/include/asm/unified.h \
 	-include ../arch/arm/include/asm/ptrace.h  \
