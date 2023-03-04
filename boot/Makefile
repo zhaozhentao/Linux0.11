@@ -22,6 +22,7 @@ interrupt: interrupt.s
 
 head.o: head.S
 	@$(CC)                                       \
+	-D__ASSEMBLY__                               \
 	-I../include                                 \
 	-I../arch/arm/include                        \
 	-I../arch/arm/mach-s3c2410/include           \

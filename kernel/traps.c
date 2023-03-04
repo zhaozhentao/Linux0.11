@@ -3,6 +3,10 @@
 void divide_error(void);
 void __vectors_start(void);
 
+asmlinkage void do_undefinstr() {
+
+}
+
 void trap_init(void) {
     int i;
 

@@ -2,7 +2,13 @@
 
 #define ARM(x...)	x
 #define THUMB(x...)
-#define W(instr)    instr
+#ifdef __ASSEMBLY__
+#define W(instr)	instr
+#endif
+#define BSYM(sym)	sym
 
-#define SYS_ERROR0 10420224
+#ifdef __ASSEMBLY__
+.macro itet, cond
+.endm
+#endif	/* __ASSEMBLY__ */
 

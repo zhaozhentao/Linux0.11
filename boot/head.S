@@ -114,8 +114,70 @@ ENDPROC(__und_svc)
 __und_usr:
   usr_entry
 
-
+  @ fall through to the emulation code, which returns using r9 if
+  @ it has emulated the instruction, or the more conventional lr
+  @ if we are to treat this as a real undefined instruction
+  @
+  @  r0 - instruction
+  @
+  adr    r9, BSYM(ret_from_exception)
+  adr    lr, BSYM(__und_usr_unknown)
+  tst    r3, #PSR_T_BIT                                 @ Thumb mode?
+  itet   eq	                                            @ explicit IT needed for the 1f label
+  subeq  r4, r2, $4                                     @ ARM instr at LR - 4
+  subne  r4, r2, $2                                     @ Thumb instr at LR - 2
+1:
+  ldreqt r0, [r4]
+  beq    call_fpe
+  b	__und_usr_unknown
 ENDPROC(__und_usr)
+
+call_fpe:
+  tst    r0, $0x08000000                                @ only CDP/CPRT/LDC/STC have bit 27
+  tstne  r0, $0x04000000                                @ bit 26 set on both ARM and Thumb-2
+  moveq  pc, lr
+  get_thread_info r10                                   @ get current thread
+  and    r8, r0, $0x00000f00                            @ mask out CP number
+  THUMB(lsr	r8, r8, $8)
+  mov	r7, $1
+  add   r6, r10, $TI_USED_CP
+  ARM(strb r7, [r6, r8, lsr $8])                        @ set appropriate used_cp[]
+  THUMB(strb r7, [r6, r8])                              @ set appropriate used_cp[]
+  ARM(add pc, pc, r8, lsr $6)
+  THUMB(	lsl	r8, r8, $2		)
+  THUMB(	add	pc, r8			)
+  nop
+
+  movw_pc	lr                                          @ CP#0
+  W(b)	do_fpe                                          @ CP#1 (FPE)
+  W(b)	do_fpe                                          @ CP#2 (FPE)
+  movw_pc  lr                                           @ CP#3
+  movw_pc  lr                                           @ CP#4
+  movw_pc  lr                                           @ CP#5
+  movw_pc  lr                                           @ CP#6
+  movw_pc  lr                                           @ CP#7
+  movw_pc  lr                                           @ CP#8
+  movw_pc  lr                                           @ CP#9
+  movw_pc  lr                                           @ CP#10 (VFP)
+  movw_pc  lr                                           @ CP#11 (VFP)
+  movw_pc  lr                                           @ CP#12
+  movw_pc  lr                                           @ CP#13
+  movw_pc  lr                                           @ CP#14 (Debug)
+  movw_pc  lr                                           @ CP#15 (Control)
+
+__und_usr_unknown:
+  enable_irq
+  mov r0, sp
+  adr lr, BSYM(ret_from_exception)
+  b   do_undefinstr
+ENDPROC(__und_usr_unknown)
+
+/*
+ * 从中断返回用户模式
+ */
+ENTRY(ret_from_exception)
+
+ENDPROC(ret_from_exception)
 
 .macro	vector_stub, name, mode, correction=0
 .align	5

@@ -9,7 +9,11 @@ kernel.o: $(OBJS)
 	@$(LD) $(LDFLAGS) -o kernel.o $(OBJS)
 	@sync
 
-traps.s traps.o: traps.c ../include/asm/system.h
+traps.s traps.o: traps.c
+	@$(CC)                                   \
+	-I../include                             \
+	-include ../include/linux/linkage.h      \
+	-c traps.c
 
 clean:
 	@rm -f *.o
