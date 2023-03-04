@@ -16,7 +16,7 @@
 
 .extern stack_start
 
-.global _start, __vectors_start, __vectors_end, __stubs_start
+.global _start, __vectors_start, __vectors_end, __stubs_start, __divsi3
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
@@ -46,6 +46,7 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   ldr r3, [r0, $8]
   bic r3, r3, $37
   str r3, [r0, $8]
+  msr cpsr_c, $0x5f                                       @ 开启中断
   mov pc, lr                                              @ 返回
 
 mmu_table:
@@ -66,42 +67,143 @@ MMU_TLB_BASE:
 .LCcralign:
   .word  cr_alignment
 
-.macro  usr_entry
-  UNWIND(.fnstart)                                         @ 实际上是空语句
-  UNWIND(.cantunwind)                                      @ 实际上是空语句 don't unwind the user space
-  sub  sp, sp, $S_FRAME_SIZE
-  ARM(stmib sp, {r1 - r12})
+Ldiv0:
+str	lr, [sp, #-8]!
+bl	__div0
+mov	r0, #0			@ About as wrong as it could be.
+ldr	pc, [sp], #8
 
-  ldmia  r0, {r1 - r3}
-  add r0, sp, $S_PC                                        @ here for interlock avoidance
-  mov r4, $-1                                              @  ""  ""     ""        ""
 
-  str r1, [sp]                                             @ save the "real" r0 copied
-                                                           @ from the exception stack
+.macro ARM_DIV_BODY dividend, divisor, result, curbit
+#if __LINUX_ARM_ARCH__ >= 5
 
-  @ We are now ready to fill in the remaining blanks on the stack:
-  @
-  @  r2 - lr_<exception>, already fixed up for correct return/restart
-  @  r3 - spsr_<exception>
-  @  r4 - orig_r0 (see pt_regs definition in ptrace.h)
-  @
-  @ Also, separately save sp_usr and lr_usr
-  @
-  stmia  r0, {r2 - r4}
-  ARM(stmdb  r0, {sp, lr}^)
+	clz	\curbit, \divisor
+	clz	\result, \dividend
+	sub	\result, \curbit, \result
+	mov	\curbit, #1
+	mov	\divisor, \divisor, lsl \result
+	mov	\curbit, \curbit, lsl \result
+	mov	\result, #0
+	
+#else
 
-  @
-  @ Enable the alignment trap while in kernel mode
-  @
-  alignment_trap r0
+	@ Initially shift the divisor left 3 bits if possible,
+	@ set curbit accordingly.  This allows for curbit to be located
+	@ at the left end of each 4 bit nibbles in the division loop
+	@ to save one loop in most cases.
+	tst	\divisor, #0xe0000000
+	moveq	\divisor, \divisor, lsl #3
+	moveq	\curbit, #8
+	movne	\curbit, #1
 
-  @
-  @ Clear FP to mark the first stack frame
-  @
-  zero_fp
+	@ Unless the divisor is very big, shift it up in multiples of
+	@ four bits, since this is the amount of unwinding in the main
+	@ division loop.  Continue shifting until the divisor is 
+	@ larger than the dividend.
+1:	cmp	\divisor, #0x10000000
+	cmplo	\divisor, \dividend
+	movlo	\divisor, \divisor, lsl #4
+	movlo	\curbit, \curbit, lsl #4
+	blo	1b
 
-  asm_trace_hardirqs_off
+	@ For very big divisors, we must shift it a bit at a time, or
+	@ we will be in danger of overflowing.
+1:	cmp	\divisor, #0x80000000
+	cmplo	\divisor, \dividend
+	movlo	\divisor, \divisor, lsl #1
+	movlo	\curbit, \curbit, lsl #1
+	blo	1b
+
+	mov	\result, #0
+
+#endif
+
+	@ Division loop
+1:	cmp	\dividend, \divisor
+	subhs	\dividend, \dividend, \divisor
+	orrhs	\result,   \result,   \curbit
+	cmp	\dividend, \divisor,  lsr #1
+	subhs	\dividend, \dividend, \divisor, lsr #1
+	orrhs	\result,   \result,   \curbit,  lsr #1
+	cmp	\dividend, \divisor,  lsr #2
+	subhs	\dividend, \dividend, \divisor, lsr #2
+	orrhs	\result,   \result,   \curbit,  lsr #2
+	cmp	\dividend, \divisor,  lsr #3
+	subhs	\dividend, \dividend, \divisor, lsr #3
+	orrhs	\result,   \result,   \curbit,  lsr #3
+	cmp	\dividend, #0			@ Early termination?
+	movnes	\curbit,   \curbit,  lsr #4	@ No, any more bits to do?
+	movne	\divisor,  \divisor, lsr #4
+	bne	1b
 .endm
+
+
+.macro ARM_DIV2_ORDER divisor, order
+#if __LINUX_ARM_ARCH__ >= 5
+	clz	\order, \divisor
+	rsb	\order, \order, #31
+#else
+	cmp	\divisor, #(1 << 16)
+	movhs	\divisor, \divisor, lsr #16
+	movhs	\order, #16
+	movlo	\order, #0
+
+	cmp	\divisor, #(1 << 8)
+	movhs	\divisor, \divisor, lsr #8
+	addhs	\order, \order, #8
+
+	cmp	\divisor, #(1 << 4)
+	movhs	\divisor, \divisor, lsr #4
+	addhs	\order, \order, #4
+
+	cmp	\divisor, #(1 << 2)
+	addhi	\order, \order, #3
+	addls	\order, \order, \divisor, lsr #1
+#endif
+.endm
+
+
+ENTRY(__divsi3)
+ENTRY(__aeabi_idiv)
+
+	cmp	r1, #0
+	eor	ip, r0, r1			@ save the sign of the result.
+	beq	Ldiv0
+	rsbmi	r1, r1, #0			@ loops below use unsigned.
+	subs	r2, r1, #1			@ division by 1 or -1 ?
+	beq	10f
+	movs	r3, r0
+	rsbmi	r3, r0, #0			@ positive dividend value
+	cmp	r3, r1
+	bls	11f
+	tst	r1, r2				@ divisor is power of 2 ?
+	beq	12f
+
+	ARM_DIV_BODY r3, r1, r0, r2
+
+	cmp	ip, #0
+	rsbmi	r0, r0, #0
+	mov	pc, lr
+
+10:	teq	ip, r0				@ same sign ?
+	rsbmi	r0, r0, #0
+	mov	pc, lr
+
+11:	movlo	r0, #0
+	moveq	r0, ip, asr #31
+	orreq	r0, r0, #1
+	mov	pc, lr
+
+12:	ARM_DIV2_ORDER r1, r2
+
+	cmp	ip, #0
+	mov	r0, r3, lsr r2
+	rsbmi	r0, r0, #0
+	mov	pc, lr
+
+ENDPROC(__divsi3)
+ENDPROC(__aeabi_idiv)
+
 
 __und_invalid:
 
@@ -110,67 +212,6 @@ ENDPROC(__und_invalid)
 __und_svc:
 
 ENDPROC(__und_svc)
-
-__und_usr:
-  usr_entry
-
-  @ fall through to the emulation code, which returns using r9 if
-  @ it has emulated the instruction, or the more conventional lr
-  @ if we are to treat this as a real undefined instruction
-  @
-  @  r0 - instruction
-  @
-  adr    r9, BSYM(ret_from_exception)
-  adr    lr, BSYM(__und_usr_unknown)
-  tst    r3, #PSR_T_BIT                                 @ Thumb mode?
-  itet   eq	                                            @ explicit IT needed for the 1f label
-  subeq  r4, r2, $4                                     @ ARM instr at LR - 4
-  subne  r4, r2, $2                                     @ Thumb instr at LR - 2
-1:
-  ldreqt r0, [r4]
-  beq    call_fpe
-  b	__und_usr_unknown
-ENDPROC(__und_usr)
-
-call_fpe:
-  tst    r0, $0x08000000                                @ only CDP/CPRT/LDC/STC have bit 27
-  tstne  r0, $0x04000000                                @ bit 26 set on both ARM and Thumb-2
-  moveq  pc, lr
-  get_thread_info r10                                   @ get current thread
-  and    r8, r0, $0x00000f00                            @ mask out CP number
-  THUMB(lsr	r8, r8, $8)
-  mov	r7, $1
-  add   r6, r10, $TI_USED_CP
-  ARM(strb r7, [r6, r8, lsr $8])                        @ set appropriate used_cp[]
-  THUMB(strb r7, [r6, r8])                              @ set appropriate used_cp[]
-  ARM(add pc, pc, r8, lsr $6)
-  THUMB(	lsl	r8, r8, $2		)
-  THUMB(	add	pc, r8			)
-  nop
-
-  movw_pc	lr                                          @ CP#0
-  W(b)	do_fpe                                          @ CP#1 (FPE)
-  W(b)	do_fpe                                          @ CP#2 (FPE)
-  movw_pc  lr                                           @ CP#3
-  movw_pc  lr                                           @ CP#4
-  movw_pc  lr                                           @ CP#5
-  movw_pc  lr                                           @ CP#6
-  movw_pc  lr                                           @ CP#7
-  movw_pc  lr                                           @ CP#8
-  movw_pc  lr                                           @ CP#9
-  movw_pc  lr                                           @ CP#10 (VFP)
-  movw_pc  lr                                           @ CP#11 (VFP)
-  movw_pc  lr                                           @ CP#12
-  movw_pc  lr                                           @ CP#13
-  movw_pc  lr                                           @ CP#14 (Debug)
-  movw_pc  lr                                           @ CP#15 (Control)
-
-__und_usr_unknown:
-  enable_irq
-  mov r0, sp
-  adr lr, BSYM(ret_from_exception)
-  b   do_undefinstr
-ENDPROC(__und_usr_unknown)
 
 /*
  * 从中断返回用户模式
@@ -238,23 +279,6 @@ vector_stub pabt, ABT_MODE, 4
 
 /** Undefined Instruction 未定义指令中断 **/
 vector_stub und, UND_MODE
-  .long  __und_usr                       @  0 (USR_26 / USR_32)
-  .long  __und_invalid                   @  1 (FIQ_26 / FIQ_32)
-  .long  __und_invalid                   @  2 (IRQ_26 / IRQ_32)
-  .long  __und_svc                       @  3 (SVC_26 / SVC_32)
-  .long  __und_invalid                   @  4
-  .long  __und_invalid                   @  5
-  .long  __und_invalid                   @  6
-  .long  __und_invalid                   @  7
-  .long  __und_invalid                   @  8
-  .long  __und_invalid                   @  9
-  .long  __und_invalid                   @  a
-  .long  __und_invalid                   @  b
-  .long  __und_invalid                   @  c
-  .long  __und_invalid                   @  d
-  .long  __und_invalid                   @  e
-  .long  __und_invalid                   @  f
-  .align 5
 
 /** Linux 中没有使用 fiq 中断 **/
 vector_fiq:
