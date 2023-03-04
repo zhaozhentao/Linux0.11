@@ -28,7 +28,7 @@ mov_irq_table:                @ 先设置好要复制的源和目的地
 mov_system:
   ldr  r1, HEAD               @ 从 0x30090600 地址开始复制
   ldr  r2, SDRAM_BASE         @ 将 system 模块移动到这个位置执行
-  add  r3, r1, $0x200         @ 使 r3 指向 HEAD 后 512 byte 地址
+  add  r3, r1, $0x1000        @ 使 r3 指向 HEAD 后 4K 地址
   b    do_move                @ 开始复制
 
 do_move:
