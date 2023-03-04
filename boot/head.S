@@ -26,6 +26,11 @@ _start:
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 
+  msr cpsr_c, #0xdf                                        @ 进入系统模式
+  ldr r0, =stack_start                                     @ 设置系统模式栈指针
+  ldr sp, [r0]
+  msr cpsr_c, $0x5f                                        @ 开启中断,自动进入系统模式
+
   bl  main                                                 @ 跳转到 main
 
 setup_interrupt:                                           @ 初始化 GPIO 引脚为外部中断, GPIO 引脚用作外部中断时，默认为低电平触发、IRQ方式(不用设置INTMOD)
@@ -46,7 +51,6 @@ setup_interrupt:                                           @ 初始化 GPIO 引�
   ldr r3, [r0, $8]
   bic r3, r3, $37
   str r3, [r0, $8]
-  msr cpsr_c, $0x5f                                       @ 开启中断
   mov pc, lr                                              @ 返回
 
 mmu_table:
