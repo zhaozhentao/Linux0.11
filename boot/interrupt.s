@@ -10,8 +10,7 @@ reset:
 _undefined_instruction:
   b    _undefined_instruction
 _software_interrupt:
-  sub   sp, sp, $S_FRAME_SIZE
-  stmia sp, {r0 - r12}                                  @ Calling r0 - r12
+  stmdb sp!, {r0 - r12}                                  @ 保护现场，保存 r0 ~ r12 寄存器, sp 指针低地址减少 4 * 13
 loop:
   b    loop
 _prefetch_abort:
