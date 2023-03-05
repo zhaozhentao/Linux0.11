@@ -7,10 +7,6 @@ asmlinkage void do_undefinstr() {
 
 }
 
-void __div0(void) {
-
-}
-
 void trap_init(void) {
     int i;
 
