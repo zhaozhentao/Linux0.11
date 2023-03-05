@@ -172,14 +172,14 @@ __stubs_end:
   .equ stubs_offset, __vectors_start + 0x200 - __stubs_start
 
 __vectors_start:
-  ARM(swi SYS_ERROR0)                                     @ reset 复位
-  W(b)   vector_und + stubs_offset                        @ Undefined Instruction 未定义指令，这里跳转到经过 traps.c trap_init() 移动后的位置
-  W(ldr) pc, .LCvswi + stubs_offset                       @ Software Interrupt，软件中断
-  W(b)   vector_pabt + stubs_offset                       @ Abort (prefetch)
-  W(b)   vector_dabt + stubs_offset                       @ Abort (data)
-  W(b)   vector_addrexcptn + stubs_offset                 @ Reserved 保留中断
-  W(b)   vector_irq + stubs_offset                        @ irq 中断
-  W(b)   vector_fiq + stubs_offset                        @ fiq 中断
+  ARM(swi SYS_ERROR0)                                     @ 0xffff0000 reset 复位
+  W(b)   vector_und + stubs_offset                        @ 0xffff0004 Undefined Instruction 未定义指令，这里跳转到经过 traps.c trap_init() 移动后的位置
+  W(ldr) pc, .LCvswi + stubs_offset                       @ 0xffff0008 Software Interrupt，软件中断
+  W(b)   vector_pabt + stubs_offset                       @ 0xffff000c Abort (prefetch)
+  W(b)   vector_dabt + stubs_offset                       @ 0xffff0010 Abort (data)
+  W(b)   vector_addrexcptn + stubs_offset                 @ 0xffff0014 Reserved 保留中断
+  W(b)   vector_irq + stubs_offset                        @ 0xffff0018 irq 中断
+  W(b)   vector_fiq + stubs_offset                        @ 0xffff001c fiq 快中断
 
 __vectors_end:
 
