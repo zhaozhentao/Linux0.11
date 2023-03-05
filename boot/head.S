@@ -20,15 +20,17 @@
 
 _start:
   bl  setup_interrupt                                      @ 设置中断
-  ldr sp, =stack_start                                     @ 将变量 stack_start 地址存放到 sp，为跳转到 main 函数准备栈空间
+  ldr r0, =stack_start                                     @ 将变量 stack_start 地址存放到 r0
+  ldr sp, [r0]                                             @ 读出 stack_start 指向的地址,赋值 sp，为跳转到 main 函数准备栈空间
 
   bl  create_page_table                                    @ 设置 MMU 映射
   bl  mmu_init                                             @ 开启 MMU
 
   msr cpsr_c, $0xdf                                        @ 进入系统模式
-  ldr sp, =stack_start                                     @ 将变量 stack_start 地址存放到 sp，为跳转到 main 函数准备栈空间
+  ldr r0, =stack_start                                     @ 设置系统模式栈指针
+  ldr sp, [r0]
+
   msr cpsr_c, $0x5f                                        @ 开启中断,自动进入系统模式
-  ldr sp, =stack_start                                     @ 将变量 stack_start 地址存放到 sp，为跳转到 main 函数准备栈空间
 
   bl  main                                                 @ 跳转到 main
 
