@@ -5,6 +5,7 @@ lib.a: lib1funcs.o
 
 lib1funcs.o: lib1funcs.S
 	@$(CC)                                       \
+	-include ../../../include/linux/linkage.h          \
 	-c -o lib1funcs.o lib1funcs.S
 
 clean:
