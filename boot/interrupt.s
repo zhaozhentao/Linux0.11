@@ -3,12 +3,17 @@
 
 .global _start
 
+.equ S_FRAME_SIZE, 72
+
 reset:
   b    reset
 _undefined_instruction:
   b    _undefined_instruction
 _software_interrupt:
-  b    _software_interrupt
+  sub   sp, sp, $S_FRAME_SIZE
+  stmia sp, {r0 - r12}                                  @ Calling r0 - r12
+loop:
+  b    loop
 _prefetch_abort:
   b    _prefetch_abort
 _data_abort:
