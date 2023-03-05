@@ -10,4 +10,5 @@ boot/setup
 boot/interrupt
 tools/kernel
 tools/system
+*.a
 

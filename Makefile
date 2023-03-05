@@ -6,6 +6,7 @@ LDFLAGS := -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
 LDFLAGS	+= -e _start
 
 ARCHIVES=kernel/kernel.o mm/mm.o fs/fs.o
+LIBS	=arch/arm/lib/lib.a
 
 all: Image
 
@@ -23,10 +24,11 @@ Image: boot/bootsect boot/setup boot/interrupt tools/system
 	$(OBJDUMP) -D -m arm tools/system > tools/system.dis
 	tools/build.sh boot/bootsect boot/setup boot/interrupt tools/kernel Image
 
-tools/system: boot/head.o boot/entry-common.o init/main.o \
+tools/system: boot/head.o boot/entry-common.o init/main.o $(LIBS) \
 	$(ARCHIVES)
 	$(LD) -Tfile.lds  boot/head.o boot/entry-common.o init/main.o \
 	$(ARCHIVES) \
+	$(LIBS) \
 	-o tools/system $(LDFLAGS)
 
 kernel/kernel.o:
@@ -46,6 +48,9 @@ boot/entry-common.o: boot/entry-common.S
 
 boot/interrupt: boot/interrupt.s
 	make interrupt -C boot
+
+arch/arm/lib/lib.a:
+	make lib.a -C arch/arm/lib
 
 boot/setup: boot/setup.s
 	make setup -C boot

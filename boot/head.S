@@ -71,13 +71,6 @@ MMU_TLB_BASE:
 .LCcralign:
   .word  cr_alignment
 
-Ldiv0:
-str	lr, [sp, #-8]!
-bl	__div0
-mov	r0, #0			@ About as wrong as it could be.
-ldr	pc, [sp], #8
-
-
 .macro ARM_DIV_BODY dividend, divisor, result, curbit
 #if __LINUX_ARM_ARCH__ >= 5
 
