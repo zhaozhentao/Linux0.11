@@ -7,3 +7,6 @@ lib1funcs.o: lib1funcs.S
 	@$(CC)                                       \
 	-c -o lib1funcs.o lib1funcs.S
 
+clean:
+	rm -f *.a *.o
+
