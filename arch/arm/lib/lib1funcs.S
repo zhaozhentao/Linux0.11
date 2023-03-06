@@ -69,7 +69,6 @@
 
 
 ENTRY(__divsi3)
-ENTRY(__aeabi_idiv)
   cmp	r1, $0
   eor	ip, r0, r1			@ save the sign of the result.
   beq	Ldiv0
@@ -106,7 +105,6 @@ ENTRY(__aeabi_idiv)
   mov	pc, lr
 
 ENDPROC(__divsi3)
-ENDPROC(__aeabi_idiv)
 
 Ldiv0:
   str lr, [sp, $-8]!
