@@ -3,7 +3,7 @@ include ../Makefile.header
 LDFLAGS	+= -r
 CFLAGS	+= -I../include
 
-OBJS  = asm.o sched.o traps.o
+OBJS  = asm.o sched.o traps.o printk.o
 
 kernel.o: $(OBJS)
 	@$(LD) $(LDFLAGS) -o kernel.o $(OBJS)
