@@ -7,8 +7,8 @@ asmlinkage void do_undefinstr() {
 
 }
 
-void __div0(void) {
-
+asmlinkage void __div0(void) {
+    printk("Division by zero in kernel.\n");
 }
 
 void trap_init(void) {
