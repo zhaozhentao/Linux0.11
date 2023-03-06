@@ -24,9 +24,6 @@ traps.s traps.o : traps.c
 printk.s printk.o : printk.c ../include/stdarg.h ../include/stddef.h ../include/linux/kernel.h 
 
 vsprintf.s vsprintf.o : vsprintf.c ../include/stdarg.h ../include/string.h
-	@$(CC)                                   \
-	-I../include                             \
-	-c -o vsprintf.o vsprintf.c
 
 clean:
 	@rm -f *.o
