@@ -32,8 +32,6 @@ static int skip_atoi(const char **s)
 #define SPECIAL	32		/* 0x */
 #define SMALL	64		/* use 'abcdef' instead of 'ABCDEF' */
 
-#define do_div(n,base) 1
-
 static char * number(char * str, int num, int base, int size, int precision
 	,int type)
 {
@@ -59,7 +57,7 @@ static char * number(char * str, int num, int base, int size, int precision
 	if (num==0)
 		tmp[i++]='0';
 	else while (num!=0)
-		tmp[i++]=digits[do_div(num,base)];
+		tmp[i++]=digits[num / base];
 	if (i>precision) precision=i;
 	size -= precision;
 	if (!(type&(ZEROPAD+LEFT)))
