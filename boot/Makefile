@@ -2,9 +2,9 @@ include ../Makefile.header
 
 all: bootsect setup interrupt
 
-bootsect: bootsect.s
+bootsect: bootsect.s ../arch/arm/mach-s3c2410/nand.o
 	@$(AS) -o bootsect.o bootsect.s
-	@$(LD) -Ttext 0x30090000 -g bootsect.o -o bootsect_elf
+	@$(LD) -Tfile.lds bootsect.o ../arch/arm/mach-s3c2410/nand.o -o bootsect_elf
 	@$(OBJCOPY) -R .pdr -R .comment -R .note -O binary -S bootsect_elf bootsect
 	@$(OBJDUMP) -D -m arm bootsect_elf > bootsect.dis
 
@@ -39,6 +39,9 @@ entry-common.o: entry-common.S
 	-include ../arch/arm/include/asm/unified.h \
 	-include ../arch/arm/include/asm/ptrace.h  \
 	-c -o entry-common.o entry-common.S
+
+../arch/arm/mach-s3c2410/nand.o : ../arch/arm/mach-s3c2410/nand.c
+	make nand.o -C ../arch/arm/mach-s3c2410
 
 clean:
 	rm -f head.s entry-common.s *.o bootsect setup interrupt *.dis *_elf
